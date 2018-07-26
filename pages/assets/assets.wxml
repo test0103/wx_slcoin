@@ -1,0 +1,31 @@
+<view class='assets_container'>
+  <view class='assets_area'>
+    <image class='userLogo' src='{{userLogo}}'></image>
+    <text class='userName'>{{userName}}</text>
+    <text class='myRank'>{{myRank}}</text>
+    <view bindtap='ToMyReward' class='myReward'></view>
+    <view bindtap='ToGameRegular' class='gameRegular'></view>
+    <view class='total_assets'>
+      <view>{{total.assets}}</view>
+      <view>{{total.profit}}</view>
+      <view>{{total.yield}}</view>
+    </view>
+  </view>
+  <view class='profit_title'></view>
+  <view class='coin_list'>
+    <view class="coin_list_title">
+        <text class='coin_name'>类别</text> 
+        <text class='coin_amount'>数量</text>
+        <text class='coin_price'>市值</text>
+        <text class='coin_ratio'>持仓占比</text>  
+    </view>
+    <block wx:for="{{coinList}}" wx:for-item="item" wx:key="index">
+      <view class="coin_item">
+        <text style="font-size:36rpx;" class='coin_name'>{{item.coin_type}}</text> 
+        <text class='coin_amount'>{{item.amount}}</text>
+        <text class='coin_price'>{{item.coin_money}}</text>
+        <text class='coin_ratio'>{{item.position}}</text>  
+      </view>
+    </block>
+  </view>
+</view>

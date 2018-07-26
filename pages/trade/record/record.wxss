@@ -1,0 +1,35 @@
+.record_container {
+  height: 600rpx;
+  position: relative;
+  margin: 0 auto;
+}
+.record_item {
+  color: #fff;
+  font-size: 24rpx;
+  border-radius: 8rpx;
+  margin: 18rpx auto;
+  position: relative;
+  width: 578rpx;
+  height: 127rpx;
+  background-size: cover;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.record_buy {
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/buy_record.png')
+}
+.record_sale {
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/sale_record.png')
+}
+
+.record_item text{
+  display: block;
+  padding-top: 70rpx;
+  flex: 1;
+}
+.record_item .record_coin_name {
+  font-size: 36rpx;
+  padding-left: 8rpx;
+  padding-top: 60rpx;
+}

@@ -1,0 +1,10 @@
+<scroll-view scroll-y class='record_container'>
+    <block wx:for="{{recordList}}" wx:for-item="item" wx:key="tabBar">
+      <view class="record_item {{item.tradeType === 0?'record_buy':'record_sale'}}">
+        <text class="record_coin_name">{{item.coinType}}</text>
+        <text>{{item.amount}}</text> 
+        <text>{{item.coinMoney}}</text>
+        <text>{{item.changeTime}}</text> 
+      </view>
+    </block>
+</scroll-view>

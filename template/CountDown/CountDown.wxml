@@ -1,0 +1,3 @@
+<template name="CountDown">
+  <text id="count">剩余时间： {{clock}}</text>
+</template>

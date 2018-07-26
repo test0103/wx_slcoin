@@ -1,0 +1,35 @@
+<view style="width:100%;height:100%;">
+  <!-- 输入框 -->
+  <view class='enter_num'>
+    <input placeholder="数量" type='number' bindinput="ChangNumer" value='{{buy_coin_amount}}'/>
+    <image src='../../../image/tradegame/input.png'></image>
+  </view>
+  <!-- 全仓或半仓 -->
+  <view class='enter_store'>
+    当前可用：<text style='{{isEnough?"":"color:red"}}'>{{AvailableMoney}}</text>
+    <image bindtap='ChooseStore' id="half" src='{{StoreImgList[halfStore]}}'/>
+    <image bindtap='ChooseStore' id="all" src='{{StoreImgList[allStore]}}'/>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class='btn_oprate'>
+    <view class='trade_money'>
+      <text>交易额</text>
+      <view>{{TradeMoney}}</view>
+    </view>
+    <image bindtap='ModifyBuy' src='../../../image/tradegame/btn_buy.png'></image>
+  </view>
+
+  <!-- 邀请按钮 -->
+  <view class='trade_btn_invite'>
+    <button bindtap='ToDetailShare' class='btn_share'></button>
+    <image class='img_share' src='../../../image/tradegame/btn_share.png' />  
+  </view>
+
+  <!--提示买入成功的Dialog-->
+  <view class='dialog-container' hidden="{{!isShowDialog}}">
+    <view class='dialog-mask'></view>
+    <image class='dialog-img' src='{{DialogUrl}}'></image>
+    <view class='dialog-content'>您成功买入 {{buy_coin_amount}} {{coinItem.coin_type}}</view>
+  </view>
+</view>

@@ -1,0 +1,118 @@
+<view id='ShowArea'>
+  <!-- 参赛前 -->
+  <view class="start_container" wx:if="{{step === 1}}">
+    <view class='start_game'>
+      <text bindtap='ViewToRegular' class='regular'>玩法介绍 >></text>
+      <image class='narrow_img' src='../../image/waitgame/narrow.gif'></image>
+      <image class="btn_img" src="../../image/waitgame/btn_start_game.png" />
+      <button wx:if="{{!isFormId}}" class="btn_game_bottom" open-type="getUserInfo" bindgetuserinfo='getUserInfo'></button>
+      <form bindsubmit="getUserFormId" report-submit='true'>
+        <button class="btn_game_bottom" wx:if="{{isFormId}}" form-type="submit" type="default"></button>
+      </form>
+    </view>
+  </view>
+
+  <!-- 已参赛 -->
+  <view class='invite_container' wx:if="{{step === 2}}">
+    <view class='room_info'>
+      <!-- 人数不足，邀请好友 -->
+      <view style='width:100%;height:100%;' wx:if="{{!isStartGame}}">
+        <image bindtap='StartGame' class='coin_img' src='../../image/waitgame/add_coin.png'></image>
+        <view class='text_area'>
+          <view>还差{{50-unFullNum}}人开赛</view>
+          <text>当前房间人数（{{unFullNum}}/50）</text>
+        </view>
+      </view>
+      <!-- 人已满，开赛倒计时 -->
+      <view style='width:100%;height:100%;' wx:if="{{isStartGame}}">
+        <image class='gametitle' src='../../image/waitgame/game_title.png'></image>
+        <image class='gamecount' src='{{countURL}}'></image>
+      </view>
+    </view>
+    <view class='start_game'>
+      <text bindtap='ViewToRegular' class='regular'>玩法介绍 >></text>
+      <image class='narrow_img' src='../../image/waitgame/narrow.gif'></image>
+      <image class="btn_img" src="../../image/waitgame/btn_invite.png" />
+      <button class="btn_game_bottom" open-type='share'></button>
+    </view>
+  </view>
+
+  <!-- 已开赛，开始交易 -->
+  <view class='trade_container' wx:if="{{step === 3}}">
+    <!--倒计时-->
+    <text class='count_time'>剩余时间：{{clock}}</text>
+    <image class='count_slider' src='../../image/tradegame/count_silder.png'></image>
+    <!--公告栏-->
+    <view class="notice_container">
+      <image class='img_notice' src='../../image/tradegame/notice.png'></image>
+      <swiper class="notice" vertical="true" autoplay="true" circular="true" interval="2000">
+        <block wx:for="{{msgList}}" wx:key="{{index}}">
+          <swiper-item>
+            <view class="notice_item">{{item}}</view>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!--选择币种-->
+    <view class='picker_container'>
+      <picker bindchange="bindPickerChange" value="{{coinIndex}}" range="{{coinArray}}">
+        <view class='picker'>
+          {{coinType}} <span></span>
+        </view>
+      </picker>
+      <text class='price'>{{coinMoney}}</text>
+    </view>
+    <!--交易部分-->
+    <view class='tab_trade_container'>
+      <!--买入/卖出/交易记录Tab部分-->
+      <view class='tab_wrapper'>
+        <view id='tabbuy' class='tab_item {{currentTab === 0 ? "tab_active":""}}' bindtap='switchTab'>
+          <image class='tab_logo' src='{{currentTab === 0 ? "../../image/tradegame/buy_active.png":"../../image/tradegame/buy.png"}}'></image>
+          <view>模拟买入</view>
+        </view>
+        <view id='tabsale' class='tab_item {{currentTab === 1 ? "tab_active":""}}' bindtap='switchTab'>
+          <image  class='tab_logo' src='{{currentTab === 1 ? "../../image/tradegame/sale_active.png":"../../image/tradegame/sale.png"}}'></image>
+          <view>模拟卖出</view>
+        </view>
+        <view id='tabrecord' class='tab_item {{currentTab === 2 ? "tab_active":""}}' bindtap='switchTab'>
+          <image  class='tab_logo' src='{{currentTab === 2 ? "../../image/tradegame/record_active.png":"../../image/tradegame/record.png"}}'></image>
+          <view>交易记录</view>
+        </view>
+      </view>
+      <!--买入/卖出/交易记录Content部分-->
+      <view class='{{currentTab === 0 ? "content_one":""}}' wx:if='{{currentTab === 0}}'>
+        <Buy id="buy" coinItem="{{coinList[coinIndex]}}" AvailableMoney="{{our.assets}}" bind:BuySuccess = "ChangeMyAssets"/>
+      </view>
+      <view class='{{currentTab === 1 ? "content_two":""}}' wx:if='{{currentTab === 1}}'>
+        <Sale id="sale" coinItem="{{coinList[coinIndex]}}" AvailableMoney="{{our.possess}}" bind:SaleSuccess = "ChangeMyAssets"/>
+      </view>
+      <view class='{{currentTab === 2 ? "content_three":""}}' wx:if='{{currentTab === 2}}'>
+        <Record id="record" recordList="{{recordList}}"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 比赛结束 -->
+  <view class='over_container' wx:if="{{step === 4}}">
+    <view class='show_result'>
+      <view class='result'>
+        恭喜
+        <view>
+          你在50人的炒币比赛中排名第一，获得180DKT
+        </view>
+      </view>
+      <text>查看奖励 >></text>
+      <view class='our_assets'>
+        <view>{{our.assets}}</view>
+        <view>{{our.profit}}</view>
+        <view>{{our.yeild}}</view>
+      </view>
+    </view>
+    <view class='over_btns'>
+      <image bindtap='AgainGame' class='over_agin' src='../../image/gameover/agin_game.png'></image>
+      <view class='over_share'>
+        <button open-type='share' id='result'></button>
+      </view>
+    </view>
+  </view>
+</view>

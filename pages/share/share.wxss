@@ -1,0 +1,106 @@
+.share_container {
+  height: 100%;
+  width: 100%;
+  background-color: #0A0F2C;
+  padding-bottom: 80rpx;
+}
+
+/** 邀请LOGO的样式 **/
+.share_title {
+  height: 534rpx;
+  width: 656rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/bg_share_title.png');
+  position: relative;
+  top: 44rpx;
+  margin: 0 auto;
+}
+.share_logo {
+  width: 136rpx;
+  height: 136rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 24rpx;
+  left: -8rpx;
+  right: 0;
+  margin: 0 auto;
+}
+.share_title .share_btn {
+  width: 260rpx;
+  height: 80rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/btn_share.png');
+  position: absolute;
+  bottom: 30rpx;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.share_btn button{
+  width: 260rpx;
+  height: 80rpx;
+  opacity: 0;
+  z-index: 2;
+  position: absolute;
+  bottom: 30rpx;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+/** 邀请列表的样式 **/
+.invite_line {
+  width: 622rpx;
+  height: 24rpx;
+  position: relative;
+  top: 54rpx;
+  left: 64rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/invite_line.png')
+}
+
+.share_list {
+  position: relative;
+  top: 54rpx;
+  margin: 0 auto;
+  min-height: 600rpx;
+}
+.list_item {
+  height: 80rpx;
+  width: 602rpx;
+  color: #fff;
+  font-size: 24rpx;
+  margin: 20rpx auto 0rpx;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 20rpx;
+  border-bottom: 1px solid #063F63;
+}
+.list_item .list_index {
+  line-height: 80rpx;
+  font-size: 36rpx;
+  padding-left: 8rpx;
+  flex: 0.5;
+}
+.list_item image {
+  height: 80rpx;
+  width:80rpx;
+  border-radius: 50%;
+  margin-right: 19rpx;
+}
+.list_item .list_name {
+  flex: 1.5;
+  line-height: 80rpx;
+}
+.list_item .list_profit {
+  flex: 1.2;
+  line-height: 80rpx;
+  text-align: center;
+}
+.list_item .list_yield {
+  flex: 1.2;
+  line-height: 80rpx;
+  text-align: center;
+}

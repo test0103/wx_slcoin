@@ -1,0 +1,49 @@
+<view class='rank_container'>
+  <view wx:if="{{isStartGame}}" style='padding-top: 24rpx;background-color: #0E1834;'>
+    <view class='rank_head'>
+      <view class='my_rank'>当前名次：{{currentRank}}</view>
+      <view class='rank_one'>
+        <image src="{{userLogo}}"></image>
+        <text>{{HeadRank[0].nickname}}</text>
+        <text style='color:#FFB10A;'>{{HeadRank[0].income}}</text>
+        <text>{{HeadRank[0].yield}}</text>
+      </view>
+
+      <view class='rank_two'>
+        <image src="{{userLogo}}"></image>
+        <text>{{HeadRank[1].nickname}}</text>
+        <text style='color:#FFB10A;'>{{HeadRank[1].profit}}</text>
+        <text>{{HeadRank[1].yield}}</text>
+      </view>
+      
+      <view class='rank_three'>
+        <image src="{{userLogo}}"></image>
+        <text>{{HeadRank[2].nickname}}</text>
+        <text style='color:#FFB10A;'>{{HeadRank[2].profit}}</text>
+        <text>{{HeadRank[2].yield}}</text>
+      </view>
+
+    </view>
+    <view class='list_title'>
+      <text>收益率</text>
+      <text>持仓盈亏</text>
+    </view>
+    <view class='rank_list'>
+      <block wx:for="{{RankList}}" wx:for-item="item" wx:key="indexr">
+        <view class="rank_item {{item.index === currentRank?'It_My':''}}">
+          <text class="rank_index">{{item.index}}</text>
+          <image src='{{item.wei_pic || userLogo}}'></image>
+          <text class='rank_name'>{{item.nickname}}</text> 
+          <text class='rank_profit'>{{item.income}}</text>
+          <text class='rank_yield'>{{item.yield}}</text> 
+        </view>
+      </block>
+    </view>
+  </view>
+  
+  <!-- 未参加比赛 -->
+  <view wx:else class='none_container'>
+    <image class='no_rank' src='../../image/rank/none_rank.png'></image>
+    <image wx:if="{{!isEnterGame}}" bindtap='ToEnterGame' class='to_Join' src='../../image/waitgame/btn_start_game.png'></image>
+  </view>
+</view>

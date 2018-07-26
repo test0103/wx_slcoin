@@ -1,0 +1,5 @@
+<view>
+  <text>二级详情页</text>
+  <import src="../../template/FooterTab/FooterTab.wxml"/>
+  <template is="tabBar" data="{{tabBar:bindData.tabBar}}"/>
+</view>

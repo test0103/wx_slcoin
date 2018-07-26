@@ -1,0 +1,139 @@
+page{
+  width:100%;
+  height:100%;
+  overflow: hidden;
+  font-family: "PingFang-SC-Regular",
+}
+.assets_container {
+  width: 100%;
+  height: 100%;
+  background-color: #0A0F2C;
+}
+
+.assets_area {
+  width: 638rpx;
+  height: 466rpx;
+  position: relative;
+  top: 28rpx;
+  left: 56rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/bg_assets.png')
+}
+
+/**用户头像即用户名样式**/
+.userLogo {
+  width: 162rpx;
+  height: 162rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 10rpx;
+  left: 50rpx;
+  border: 2px solid #C98F17;
+}
+.userName {
+  color: #fff;
+  font-size: 30rpx;
+  position: absolute;
+  top: 92rpx;
+  left: 234rpx;
+}
+.myRank {
+  font-size: 46rpx;
+  position: absolute;
+  top: 80rpx;
+  right: 80rpx;
+}
+/**奖励和规则按钮样式**/
+.myReward {
+  width: 212rpx;
+  height: 54rpx;
+  position: absolute;
+  top: 212rpx;
+  left: 58rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/my_reward.png')
+}
+.gameRegular{
+  width: 212rpx;
+  height: 54rpx;
+  position: absolute;
+  top: 212rpx;
+  right: 54rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/game_regular.png')
+}
+
+/**个人资产样式**/
+.total_assets {
+  width: 638rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: absolute;
+  top: 360rpx;
+  left: 16rpx;
+  right: 0;
+  margin: auto;
+}
+.total_assets view {
+  flex: 1;
+  color: #fff;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+/** 币种列表 **/
+.profit_title {
+  width: 636rpx;
+  height: 40rpx;
+  position: relative;
+  top: 62rpx;
+  left: 57rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/profit_title.png');
+}
+.coin_list {
+  width: 638rpx;
+  min-height: 440rpx;
+  position: relative;
+  top: 82rpx;
+  left: 56rpx;
+  border-radius: 10rpx;
+  background-color: #232741;
+}
+.coin_list_title{
+  width: 600rpx;
+  height: 60rpx;
+  color: #00E0FE;
+  font-size: 20rpx;
+  line-height: 60rpx;
+  margin: 0 auto;  
+  border-bottom:1rpx solid #1B4F6A;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.coin_item {
+  height: 80rpx;
+  width: 600rpx;
+  color: #fff;
+  margin: 0 auto;
+  font-size: 24rpx;
+  line-height: 80rpx;
+  border-bottom:1rpx solid #1B4F6A;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.coin_name {
+  flex: 0.5;
+  display: block;
+  text-align: center;
+}
+.coin_amount,
+.coin_price,
+.coin_ratio {
+  flex: 1;
+  display: block;
+  text-align: center;
+}

@@ -1,0 +1,6 @@
+<view class='dialog-container' hidden="{{!isShow}}">
+    <view class='dialog-info'>
+        <image class='dialog-img' src='../../image/tradegame/sale_dialog.png'></image>
+        <view class='dialog-content'>777777777</view>
+    </view>
+</view>

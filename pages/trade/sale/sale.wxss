@@ -1,0 +1,132 @@
+/** 输入或者选择模块的样式 **/
+/*输入框的样式*/
+.enter_num input{
+  height: 80rpx;
+  width: 580rpx;
+  font-size: 36rpx;
+  position: absolute;
+  top: 26%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 0 60rpx;
+  z-index: 2;
+}
+.enter_num image {
+  height: 80rpx;
+  width: 580rpx;
+  position: absolute;
+  top: 26%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+/*选择标签的样式*/
+.enter_store {
+  width: 90%;
+  color: #fff;
+  font-size: 20rpx;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.enter_store image {
+  float: right;
+  width: 152rpx;
+  height: 62rpx;
+  margin: 0 6rpx;
+}
+
+/** 交易额和操作按钮样式 **/
+.btn_oprate {
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+}
+.btn_oprate .trade_money text{
+  color: #fff;
+  font-size: 20rpx;
+}
+.btn_oprate .trade_money view{
+  letter-spacing: 4rpx;
+  font-size: 60rpx;
+  color: #00E0FE;
+}
+.btn_oprate image {
+  width: 470rpx;
+  height: 102rpx;
+  margin: 20rpx auto 0;
+}
+
+/** 邀请好友按钮样式 **/
+.trade_btn_invite {
+  width: 85%;
+  height: 80rpx;
+  padding: 10rpx 0;
+  position: absolute;
+  top: 88%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.trade_btn_invite .btn_share {
+  width: 260rpx;
+  height: 80rpx;
+  opacity: 0;
+  z-index: 2;
+  position: absolute;
+  bottom: 30rpx;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.trade_btn_invite .img_share {
+  width: 260rpx;
+  height: 80rpx;
+  position: absolute;
+  bottom: 30rpx;  
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.dialog-mask{
+    position: fixed;
+    z-index: 1000;
+    height: 100%;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(10, 10, 10, 0.5);
+}
+.dialog-img{
+    width: 462rpx;
+    height: 400rpx; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 2000;
+}
+.dialog-content{
+    min-height: 80rpx;
+    font-size: 23rpx;
+    line-height: 1.3;
+    word-wrap: break-word;
+    word-break: break-all;
+    color: #FFFFFF;
+    position: absolute;
+    top: 30%;
+    left: 32%;
+    right: 0;
+    margin: auto;
+    z-index: 2000;
+}

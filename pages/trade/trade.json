@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "Buy": "buy/buy",
+    "Sale": "sale/sale",
+    "Record": "record/record"
+  }
+}

@@ -1,0 +1,20 @@
+<view class='share_container'>
+  <view class='share_title'>
+    <image class='share_logo' src='{{userLogo}}'></image>
+    <view class='share_btn'>
+      <button open-type='share'></button>
+    </view>
+  </view>
+  <view class='invite_line'></view>
+  <view class='share_list'>
+    <block wx:for="{{inviteList}}" wx:for-item="item" wx:key="index">
+      <view class="list_item">
+        <text class="list_index">{{item.index}}</text>
+        <image src='{{userLogo}}'></image>
+        <text class='list_name'>{{item.nickname}}</text> 
+        <text class='list_profit'>{{item.profit}}</text>
+        <text class='list_yield'>{{item.yield}}</text> 
+      </view>
+    </block>
+  </view>
+</view>

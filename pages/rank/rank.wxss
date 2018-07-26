@@ -1,0 +1,154 @@
+.rank_container {
+  height: 100%;
+  width: 100%;
+}
+/** 顶部排名样式 **/
+.rank_head{
+  width: 692rpx;
+  height: 426rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/rank_title.png');
+  position: relative;
+  margin: 0 auto;
+}
+.my_rank{
+  color: #fff;
+  font-size: 24rpx;
+  position: absolute;
+  top: 60rpx;
+  left: 24rpx;
+}
+/*第一名样式*/
+.rank_one {
+  position: absolute;
+  top: 12rpx;
+  left: 300rpx;
+}
+.rank_one image{
+  height: 100rpx;
+  width: 100rpx;
+  border: 4px solid #81601E;
+  border-radius: 50%;
+}
+.rank_one text,
+.rank_two text,
+.rank_three text{
+  color: #fff;
+  font-size: 24rpx;
+  display: block;
+  text-align: center;
+}
+/*第二名样式*/
+.rank_two {
+  position: absolute;
+  top: 160rpx;
+  left: 46rpx;
+}
+.rank_two image{
+  height: 80rpx;
+  width: 80rpx;
+  border: 4px solid #084866;
+  border-radius: 50%;
+}
+/*第三名样式*/
+.rank_three {
+  position: absolute;
+  top: 46rpx;
+  left: 566rpx;
+}
+.rank_three image {
+  height: 70rpx;
+  width: 70rpx;
+  border: 4px solid #084866;
+  border-radius: 50%;
+}
+
+/** 排名表头样式 **/
+.list_title {
+  width: 644rpx;
+  height: 28rpx;
+  color: #fff;
+  font-size: 24rpx;
+  position: relative;
+  margin: 18rpx auto;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/bold_line.png');
+}
+.list_title text {
+  display: block;
+  width: 22%;
+  float: right;
+  text-align: center;
+}
+
+/** 排名列表样式 **/
+.rank_list {
+  position: relative;
+  margin: 0 auto;
+  min-height: 700rpx;
+}
+.rank_item {
+  width: 644rpx;
+  height: 100rpx;
+  color: #fff;
+  font-size: 24rpx;
+  margin: 18rpx auto 0;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-bottom: 1px solid #063F63;
+}
+
+.rank_item .rank_index {
+  line-height: 100rpx;
+  font-size: 36rpx;
+  padding-left: 8rpx;
+  flex: 0.4;
+}
+.rank_item image {
+  height: 80rpx;
+  width:80rpx;
+  border-radius: 50%;
+  margin-right: 19rpx;
+}
+.rank_item .rank_name {
+  flex: 1.6;
+  line-height: 100rpx;
+}
+.rank_item .rank_profit {
+  flex: 1.2;
+  line-height: 100rpx;
+  text-align: center;
+}
+
+.rank_item .rank_yield {
+  flex: 1.2;
+  line-height: 100rpx;
+  text-align: center;
+}
+.It_My {
+  color: #FFB10A;
+}
+
+/** 未参赛的排名样式 **/
+.none_container{
+  min-height: 1110rpx;
+  width: 100%;
+  background-color: #0A0F2C;
+}
+.no_rank {
+  width: 448rpx;
+  height: 490rpx;
+  position: absolute;
+  top: 166rpx;
+  left: 190rpx;
+}
+.to_Join {
+  width: 374rpx;
+  height: 110rpx;
+  position: absolute;
+  bottom: 238rpx;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
