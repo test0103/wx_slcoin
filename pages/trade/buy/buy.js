@@ -41,20 +41,21 @@ Component({
       let amount = 0,money = 0;
       if(this.data.allStore === 0){
         amount = this.data.coinItem.full;
-        money = this.data.AvailableMoney;
+        money = (this.data.coinItem.full * this.data.coinItem.coin_money).toFixed(4);
       }
       if (this.data.halfStore === 2){
         amount = this.data.coinItem.half;
-        money = this.data.AvailableMoney * 0.5;
+        money = (this.data.coinItem.half * this.data.coinItem.coin_money).toFixed(4);
       }
       this.setData({
         TradeMoney: money,    // 交易金额
-        buy_coin_amount: amount,   // 买入数量
+        buy_coin_amount: amount === 0 ? '' : amount,   // 买入数量
       })
     },
 
     // 选择全仓或者半仓
     ChooseStore(e) {
+      console.log(e)
       let storeName = e.target.id;
       if (storeName === 'all') {
         this.setData({

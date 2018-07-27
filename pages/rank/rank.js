@@ -46,19 +46,48 @@ Page({
   },
   // 获取排名信息
   getRankInfo: function() {
+    let temp_user = app.globalData.user_id;
+    if (temp_user === '') {
+      wx.getStorage({
+        key: 'user_id',
+        success: res => {
+          temp_user = res.data
+        }
+      });
+    }
+    let temp_room = app.globalData.room_num;
+    if (temp_room === '') {
+      wx.getStorage({
+        key: 'room_num',
+        success: res => {
+          temp_room = res.data
+        }
+      });
+    }
     wx.request({
       url: app.globalData.ROOTURL + '/rank_info',
       data: {
-        user_id: app.globalData.user_id,
-        room_num: app.globalData.room_num
+        user_id: temp_user,
+        room_num: temp_room
       },
       success: res => {
         if(res.statusCode === 200) {
           let len = res.data.length;
+          for(let i=0;i<len-1;i++){
+            if(typeof res.data[i] === 'object'){
+              res.data[i].wei_pic = decodeURIComponent(res.data[i].wei_pic);
+            }
+          }
+          console.log(res.data);
           this.setData({
             HeadRank: res.data.slice(0, 3),
             RankList: res.data.slice(3, len - 1),
             currentRank: res.data[len - 1].split(":")[1]
+          })
+        } else {
+          wx.showToast({
+            title: '获取排名信息失败',
+            icon: 'none'
           })
         }
       },

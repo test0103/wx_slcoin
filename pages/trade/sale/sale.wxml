@@ -1,14 +1,20 @@
 <view style="width:100%;height:100%;">
   <!-- 输入框 -->
   <view class='enter_num'>
-    <input placeholder="数量" value='{{sale_coin_amount}}' bindinput='ChangNumer'/>
+    <input placeholder="数量" type='number' bindinput="ChangNumer" value='{{sale_coin_amount}}'/>
     <image src='../../../image/tradegame/input.png'></image>
   </view>
   <!-- 全仓或半仓 -->
   <view class='enter_store'>
-    当前可用：<text style='{{isEnough?"":"color:red"}}'>{{AvailableCoin}}</text>
-    <image bindtap='ChooseStore' id="half" src='{{StoreImgList[halfStore]}}' />
-    <image bindtap='ChooseStore' id="all" src='{{StoreImgList[allStore]}}'/>
+    <view wx:if="{{isEnough}}" class='can_use_money'>
+      <view>当前可用：</view>
+      {{AvailableCoin}}
+    </view>
+    <view wx:else style='color:#ff6600;' class='can_use_money'>当前可用不足</view>
+    <view class='label_store'>
+      <image bindtap='ChooseStore' id="half" src='{{StoreImgList[halfStore]}}' />
+      <image bindtap='ChooseStore' id="all" src='{{StoreImgList[allStore]}}'/>
+    </view>
   </view>
 
   <!-- 操作按钮 -->
@@ -17,7 +23,8 @@
       <text>交易额</text>
       <view>{{TradeMoney}}</view>
     </view>
-    <image bindtap='ModifySale' src='../../../image/tradegame/btn_sale.png'></image>
+    <image wx:if="{{isEnough}}" bindtap='ModifySale' src='../../../image/tradegame/btn_sale.png'></image>
+    <image wx:else bindtap='ModifySale' src='../../../image/tradegame/btn_unsale.png'></image>
   </view>
 
   <!-- 邀请按钮 -->

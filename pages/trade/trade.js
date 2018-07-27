@@ -3,19 +3,21 @@ const app = getApp();
 var coinTimer;  //获取币种信息的定时器
 var waitTime; // 等待比赛开始的定时器
 var timer;  //比赛倒计时的定时器
-var total_second = 24 * 60 * 60; // 一天的倒计时
+var total_second = 2 * 60 * 60; // 一天的倒计时
 
 Page({
   /**
    * 页面的初始数据
    */
   data: {
+    user_id: '',
+    room_num: '',
     isFormId: false, // 是否获取formId
     step: 1, // 表示进行的步骤：1-未参赛，2-邀请好友，3-开赛进行交易，4-比赛结束
     isEnterGame: false, // 是否参加比赛
     isStartGame: false, // 是否开赛
     unFullNum: 49, // 当前房间人数
-    countURL: '',  //倒计时的数字图标 
+    countURL: '',  // 开赛前倒计时的数字图标 
     clock: "00:00:00",  // 开赛后的倒计时
     coinType: '', // 当前币种
     coinMoney: '', // 当前币种的价格
@@ -35,17 +37,33 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.showShareMenu({
-      withShareTicket: true
-    });
-    console.log(this.data)
+    console.log(app);
+    wx.getStorage({
+      key: 'room_num',
+      success: res => {
+        this.setData({
+          room_num: res.data
+        })
+      }
+    })
+    wx.getStorage({
+      key: 'user_id',
+      success: res => {
+        this.setData({
+          user_id: res.data
+        })
+      }
+    })
+  },
+
+  onShow: function(){
     wx.getStorage({
       key: 'step',
       success: res => {
         this.setData({
           step: res.data
         })
-        this.JugeTheStatus();
+        this.JugeTheStatus(res.data);
       }
     })
   },
@@ -59,15 +77,18 @@ Page({
   },
 
   // 判断用户的状态，并初始化数据
-  JugeTheStatus: function () {
-    console.log('初始化数据')
-    if (this.data.step === 2) {
+  JugeTheStatus: function (step) {
+    console.log('状态更改，初始化数据。。。。')
+    if (step === 2) {
       console.log('状态2')
+      console.log(this.data)
       this.getRoomInfo();
     }
 
-    if (this.data.step === 3) {
+    if (step === 3) {
       console.log('状态3')
+      clearTimeout(waitTime);
+      waitTime = null;
       if (this.data.currentTab === 0) {
         this.Buy = this.selectComponent("#buy");
         this.Buy.init();
@@ -79,53 +100,260 @@ Page({
       this.getCoinInfo();
       this.getRollingInfor();
       this.getMyAssets();
-      // wx.getStorage({
-      //   key: 'endTime',
-      //   success: (res) => {
-      //     let end = new date(res.data).getTime();
-      //     let now = new date().getTime();
-      //     total_second = end - now;
-      //     count_down(this);
-      //   },
-      // })
+
+      wx.getStorage({
+        key: 'endTime',
+        success: (res) => {
+          let end = Math.floor(new Date(res.data).getTime() / 1000);
+          console.log(end);
+          let now = Math.floor(new Date().getTime() / 1000);
+          console.log(now);
+          total_second = end - now;
+          CountOneDay(this);
+        },
+      })
     }
 
-    if(this.data.step === 4) {
-
+    if(step === 4) {
+      console.log('状态4');
+      clearInterval(coinTimer);
+      coinTimer = null;
+      app.globalData.room_num = '';
     } 
+  },
+
+  /**
+   * 点击立即参赛，获取用户信息权限
+   */
+  getUserInfo: function (e) {
+    if (e.detail.userInfo) { // 用户点击了授权,并将用户的信息缓存
+      wx.setStorage({
+        key: "isAuthorize",
+        data: true
+      })
+      wx.setStorage({
+        key: "userInfo",
+        data: e.detail.userInfo
+      })
+      wx.showToast({
+        title: '授权成功！',
+      });
+    } else {  // 用户拒绝了授权
+      wx.showModal({
+        title: '警告',
+        content: '您点击了拒绝授权，可能没办法更好的体验炒币大咖!',
+        showCancel: false
+      })
+    }
+    let userData = {
+      nickname: e.detail.userInfo.nickName || '',
+      wei_pic: encodeURIComponent(e.detail.userInfo.avatarUrl || '../../image/wx_login.jpg'),
+      time: Utils.formatTime(new Date())
+    };
+
+    this.userLogin(userData);
+  },
+
+  // 用户登录，并获取user_id
+  userLogin: function (userData) {
+    wx.login({
+      success: res => {
+        if (res.code) {
+          app.globalData.code = res.code;
+          console.log('获取Code');
+
+          let params = userData;
+          params.code = res.code;
+          params.time = Utils.formatTime(new Date());
+
+          if (app.globalData.query.from) {
+            params.form = app.globalData.query.from;
+            params.room_num = app.globalData.query.room_num;
+          }
+
+          wx.request({
+            url: 'http://172.20.120.190:8088/authorization',
+            data: params,
+            success: res => {
+              console.log('获取user_id');
+              if (res.statusCode === 200) {
+                this.setData({
+                  user_id: res.data.user_id
+                })
+                app.globalData.user_id = res.data.user_id;
+                console.log('缓存user_id！');
+                wx.setStorage({
+                  key: 'user_id',
+                  data: res.data.user_id
+                })
+              }
+            },
+            fail: err => {
+              wx.showToast({
+                title: '获取user_id失败',
+                icon: 'error'
+              });
+            }
+          })
+
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
+
+    // 切换点击按钮的属性，获取用户的formId，以便后续发模版消息
+    this.setData({
+      isFormId: true
+    })
+  },
+
+  // 授权后获取用户的FormId，并参加比赛
+  getUserFormId: function (e) {
+    console.log('获取用户的formId')
+    this.setData({
+      formId: e.detail.formId
+    })
+    this.joinGame(e.detail.formId);
+  },
+
+  // 立即参赛
+  joinGame: function (formId) {
+    console.log('获取formId后，立即参赛')
+    console.log(this.data.user_id);
+    let temp = app.globalData.user_id;
+
+    if(temp === ''){
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp = res.data
+            console.log('获取缓存中')
+          }
+        });
+        console.log('缓存获取成功：' + temp + '33')
+      }
+    }
+    console.log(temp)
+
+    wx.request({
+      url: app.globalData.ROOTURL + '/game/join',
+      data: {
+        user_id: temp,
+        formId: formId,
+        time: Utils.formatTime(new Date())
+      },
+      success: res => {
+        console.log('2222res')
+        if (res.statusCode === 200) {
+          console.log('参赛成功获取房间号')
+          app.globalData.room_num = res.data.roomNum;
+          console.log('缓存房间号')
+          this.setData({
+            step: 2,
+            room_num: res.data.roomNum,
+            isEnterGame: true,
+            unFullNum: res.data.number
+          })
+          wx.setStorage({
+            key: "step",
+            data: 2
+          })
+          wx.setStorage({
+            key: "isEnterGame",
+            data: true
+          })
+          wx.setStorage({
+            key: "room_num",
+            data: res.data.roomNum
+          })
+          this.JugeTheStatus(2);  //登录后变更状态，需要重新初始化数据
+        } else {
+          wx.showToast({
+            title: '参赛失败',
+            icon: 'none'
+          })
+        }
+      },
+      fail: err => {
+        console.error(err);
+      }
+    })
   },
 
   // 在等待开赛时，轮询获取房间的信息
   getRoomInfo: function () {
+    console.log('开始获取房间信息')
+    let temp_user = app.globalData.user_id;
+    let temp_room = app.globalData.room_num;
+    console.log(this.data.room_num);
+
+    if (temp_room === ''){
+      if (this.data.room_num !== '' && this.data.room_num !== undefined){
+        temp_room = this.data.room_num;
+      } else {
+        wx.getStorage({
+          key: 'room_num',
+          success: res => {
+            temp_room = res.data;
+          },
+        })
+      }
+    }
+
+    if (temp_user === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp_user = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp_user = res.data;
+          },
+        })
+      }
+    }
+
     wx.request({
       url: app.globalData.ROOTURL + '/room_info',
       data: {
-        user_id: app.globalData.user_id,
-        room_num: app.globalData.room_num,
+        user_id: temp_user,
+        room_num: temp_room,
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log('获取房间信')
         if (res.statusCode === 200) {
+          console.log('成功更新房间信息')
           this.setData({
             unFullNum: res.data.number
           })
-          if(res.data.number >= 50) {
-            this.setData({
-              endTime: res.data.endTime
-            })
+
+          if(res.data.number >= 5) {
             wx.setStorage({
               key: 'endTime',
               data: res.data.endTime,
             })
             clearTimeout(waitTime);
             waitTime = null;
-            this.StartGame();
+
+            this.StartGame(res.data.endTime);
             return;
           }
-          waitTime = setTimeout(() => {
-            this.getRoomInfo();
-          }, 30 * 1000)
+        } else {
+          wx.showToast({
+            title: '获取房间信息失败',
+            icon: 'none'
+          })
         }
+        
+        waitTime = setTimeout(() => {
+          this.getRoomInfo();
+        }, 5 * 1000);
+
       },
       fail: err => {
         console.error('获取房间信息失败！');
@@ -135,10 +363,25 @@ Page({
 
   // 请求虚拟货币的基本信息
   getCoinInfo: function() {
+    let temp = app.globalData.user_id;
+    if (temp === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp = res.data
+          }
+        });
+      }
+    }
+
     wx.request({
       url: app.globalData.ROOTURL + '/coin_info',
       data: {
-        user_id: app.globalData.user_id
+        user_id: temp,
+        time: Utils.formatTime(new Date())
       },
       success: res => {
         if (res.statusCode === 200) {
@@ -155,6 +398,11 @@ Page({
           coinTimer = setTimeout(() => {
             this.getCoinInfo();
           }, 60 * 1000);
+        } else {
+          wx.showToast({
+            title: '获取币种信息失败',
+            icon: 'none'
+          })
         }
       },
       fail: err => {
@@ -165,132 +413,85 @@ Page({
 
   // 获取比赛时的用户交易信息
   getRollingInfor: function () {
+    let temp = app.globalData.user_id;
+    if (temp === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp = res.data
+          }
+        });
+      }
+    }
+
     wx.request({
       url: app.globalData.ROOTURL + '/rolling',
       data: {
-        user_id: app.globalData.user_id,
-        time: Utils.formatTime(new Date('2018-07-27 00:00:00'))
+        user_id: temp,
+        time: Utils.formatTime(new Date())
       },
       success: res => {
-        if (res.statusCode === 200 && res.data.length > 0) {
-          this.setData({
-            msgList: res.data
-          });
+        if (res.statusCode === 200) {
+          if(res.data.length > 0) {
+            this.setData({
+              msgList: res.data
+            });
+          }
+        } else {
+          wx.showToast({
+            title: '获取交易信息失败',
+            icon: 'none'
+          })
         }
       },
       fail: err => {
-        console.error('获取房间内的交易信息失败！');
+        console.error('获取交易信息失败！');
       }
     })
   },
 
   //请求当前用户的个人资产
   getMyAssets: function () {
+    let temp = app.globalData.user_id;
+    if (temp === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp = res.data
+          }
+        });
+      }
+    }
+
     wx.request({
       url: app.globalData.ROOTURL + '/personAsset',
       data: {
-        user_id: app.globalData.user_id,
-        time: Utils.formatTime(new Date('2018-07-27 00:00:00'))
-      },
-      success: res => {
-        this.setData({
-          our: {
-            assets: res.data.money,
-            possess: DealMyOwn(res.data.possess)
-          }
-        })
-      },
-      fail: err => {
-        console.error('请求当前用户的个人资产失败！');
-      }
-    })
-  },
-
-  /**
-   * 点击立即参赛，获取用户信息权限
-   */
-  getUserInfo: function (e) {
-    console.log('获取用户的授权信息')
-    console.log(e);
-    if (e.detail.userInfo) { // 用户点击了授权,并将用户的信息缓存
-      wx.setStorage({
-        key: "isAuthorize",
-        data: true
-      })
-      wx.setStorage({
-        key: "userInfo",
-        data: e.detail.userInfo
-      })
-      wx.showToast({
-        title: '授权成功，点击参赛！',
-      });
-    } else {  // 用户拒绝了授权
-      wx.showModal({
-        title: '警告',
-        content: '您点击了拒绝授权，可能没办法更好的体验炒币大咖!',
-        showCancel: false
-      })
-    }
-   
-    this.setData({
-      isFormId: true
-    })
-    // 更新用户的个人基本信息
-    wx.request({
-      url: app.globalData.ROOTURL + '/updateUserInfo',
-      data: {
-        user_id: app.globalData.user_id,
-        nickname: e.detail.userInfo.nickName || '',
-        wei_pic: encodeURIComponent(e.detail.userInfo.avatarUrl || '../../image/wx_login.jpg')
-      }
-    })
-  },
-
-  // 授权后获取用户的FormId
-  getUserFormId: function(e) {
-    console.log('获取用户的formId')
-    console.log(e);
-    this.setData({
-      formId: e.detail.formId
-    })
-    this.joinGame(e.detail.formId);
-  },
-
-  // 立即参赛
-  joinGame: function (formId) {
-    console.log( '获取formId后，立即参赛')
-    wx.request({
-      url: app.globalData.ROOTURL + '/game/join',
-      data: {
-        user_id: app.globalData.user_id,
-        formId: formId,
+        user_id: temp,
         time: Utils.formatTime(new Date())
       },
       success: res => {
         if (res.statusCode === 200) {
-          app.globalData.room_num = res.data.roomNum;
           this.setData({
-            step: 2,
-            isEnterGame: true,
-            unFullNum: res.data.number
+            our: {
+              assets: res.data.money,
+              possess: DealMyOwn(res.data.possess)
+            }
           })
-          wx.setStorage({
-            key: "step",
-            data: 2
+        } else {
+          wx.showToast({
+            title: '获取个人资产信息失败',
+            icon: 'none'
           })
-          wx.setStorage({
-            key: "isEnterGame",
-            data: true
-          })
-          wx.setStorage({
-            key: "room_num",
-            data: res.data.roomNum
-          })
-          this.JugeTheStatus();  //登录后变更状态，需要重新初始化数据
         }
       },
       fail: err => {
-        console.error(err);
+        console.error('请求当前用户的个人资产失败！');
       }
     })
   },
@@ -318,16 +519,19 @@ Page({
   },
 
   // 开始比赛(目前是点击金币图片，实现开赛)
-  StartGame: function (){
+  StartGame: function (endTime){
     this.setData({
-      isStartGame:true
+      isStartGame:true,
+      endTime: endTime
     });
     wx.setStorage({
       key: 'isStartGame',
       data: true,
     })
     count_down(this);
-    // CountOneDay(this);
+    let end = Math.floor(new Date(endTime).getTime() / 1000);
+    let now = Math.floor(new Date().getTime() / 1000);
+    total_second = end - now;
   },
 
   // 选择币种事件 
@@ -348,7 +552,7 @@ Page({
     }
   },
 
-  // 选择买入/卖出/交易记录
+  // 选择买入/卖出/交易记录的Tab
   switchTab: function (e) {
     let tab = e.currentTarget.id;
     switch(tab) {
@@ -364,15 +568,49 @@ Page({
         break;
       case 'tabrecord':
         this.setData({ currentTab: 2 });
-        Utils.getDataFromServer('/transationRecord', { user_id: app.globalData.user_id }, 2).then((res) => {
+        this.getUserRecords();
+        break;
+    }
+  },
+
+  // 查看本人的当场比赛的交易记录
+  getUserRecords: function (){
+    let temp = app.globalData.user_id;
+    if (temp === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp = res.data
+          }
+        });
+      }
+    }
+
+    wx.request({
+      url: app.globalData.ROOTURL + '/transationRecord',
+      data: {
+        user_id: temp,
+        time: Utils.formatTime(new Date())
+      },
+      success: res => {
+        if (res.statusCode === 200) {
           this.setData({
             recordList: res.data
           })
-        }).catch((err) => {
-          console.error(err);
-        })
-        break;
-    }
+        } else {
+          wx.showToast({
+            title: '获取个人交易记录失败',
+            icon: 'none'
+          })
+        }
+      },
+      fail: err => {
+        console.error('获取个人交易记录失败！');
+      }
+    })
   },
 
   // 买入卖出成功后，更新个人资产
@@ -387,20 +625,62 @@ Page({
 
   // 比赛结束
   GameOver: function(){
+    let temp_room = app.globalData.room_num;
+    if (temp_room === '') {
+      if (this.data.room_num !== '' && this.data.room_num !== undefined) {
+        temp_room = this.data.room_num;
+      } else {
+        wx.getStorage({
+          key: 'room_num',
+          success: res => {
+            temp_room = res.data;
+          },
+        })
+      }
+    }
+
+    let temp_user = app.globalData.user_id;
+    if (temp_user === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp_user = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp_user = res.data;
+          },
+        })
+      }
+    }
+
     wx.request({
-      url: app.globalData.ROOTURL + '/room/end',
+      url: app.globalData.ROOTURL + '/game/room/end',
       data: {
-        user_id: app.globalData.user_id,
-        room_num: app.globalData.room_num
+        user_id: temp_user,
+        room_num: temp_room,
+        time: Utils.formatTime(new Date())
       },
       success: res => {
         if(res.statusCode === 200) {
           this.setData({
-            myrank: res.data.rank,
+            step: 4,
+            room_num: '',
+            myrank: res.data.userRank,
             our:{
-              income: res.data.income,
-              yield: res.data.yield
+              assets: res.data.asset,
+              income: res.data.endMoney,
+              yield: res.data.endRate
             }
+          })
+          wx.setStorage({
+            key: "isEnterGame",
+            data: false
+          });
+          wx.removeStorage({ key: 'endTime' });
+          wx.removeStorage({ key: 'room_num' });
+        } else {
+          wx.showToast({
+            title: '当场比赛结束失败',
           })
         }
       },
@@ -421,11 +701,15 @@ Page({
       key: "step",
       data: 1
     })
-    wx.setStorage({
-      key: "isEnterGame",
-      data: false
-    })
+   
   },
+
+  // 查看奖励
+  ToMyReward: function () {
+    wx.navigateTo({
+      url: '/pages/reward/reward',
+    })
+  }
 })
 
 
@@ -445,7 +729,7 @@ function count_down(that) {
       data: 3
     })
     CountOneDay(that)
-    that.JugeTheStatus();
+    that.JugeTheStatus(3);
     return;
   }
 
@@ -471,6 +755,7 @@ function CountOneDay(that) {
     });
     clearTimeout(timer);
     timer = null;
+    that.GameOver();
     return;
   }
   timer = setTimeout(function () {
@@ -493,6 +778,9 @@ function fill_zero_prefix(num) {
 
 // 处理个人资产的格式（字符串转为对象）
 function DealMyOwn(str){
+  if(str === '') {
+    return {};
+  }
   let temp = str.split(",");
   let item = {};
   for(let i=0,len=temp.length;i<len;i++){

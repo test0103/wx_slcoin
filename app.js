@@ -5,63 +5,51 @@ App({
   onLaunch: function (options) {
     this.globalData.secene = options.scene;
     console.log(options);
+
     if (options.secene === 1044 || options.secene === 1007) {  //  通过好友的分享进入  
-      this.globalData.room_num = options.query.room_num;
+      this.globalData.query = options.query;
     }
     wx.checkSession({
       success: () => {
-        //session_key 未过期
+        // 当前的session_key未过期
+        console.log('已经登录')
         wx.getStorage({
           key: 'user_id',
           success: res => {
             this.globalData.user_id = res.data;
           }
         })
+        
         wx.getStorage({
           key: 'room_num',
           success: res => {
-            if(res.data !== ''){
+            if (res.data !== '') {
               this.globalData.room_num = res.data;
             }
           }
         })
-      },
-      fail: () => {
-        // session_key 已经失效，需要重新执行登录流程
-        wx.login({
+       
+        wx.getStorage({
+          key: 'endTime',
           success: res => {
-            if (res.code) {
-              //发起网络请求,获取user_id
-              this.globalData.code = res.code;
-
-              let _data = {}
-              _data.code = res.code;
-              if(options.query.user_id){
-                _data.from = options.query.user_id;
-                _data.room_num = options.query.room_num;
+            if (res.data !== '') {
+              if(new Date(res.data).getTime() > new Date().getTime()){
+                console.log(11)
+                this.globalData.endTime = res.data;
+              } else {
+                console.log(22)
+                wx.setStorage({
+                  key: 'step',
+                  data: 4,
+                })
               }
-
-              wx.request({
-                url: 'https://123.207.247.38:8088/authorization',
-                data: _data,
-                success: res => {
-                  if (res.statusCode === 200) {
-                    this.globalData.user_id = res.data.user_id;
-                    wx.setStorage({
-                      key: 'user_id',
-                      data: res.data.user_id
-                    })
-                  }
-                },
-                fail: err => {
-                  console.log('获取user_id失败！');
-                }
-              })
-            } else {
-              console.log('登录失败！' + res.errMsg)
             }
           }
         })
+        
+      },
+      fail: () => {
+        // 当前用户已过期
       }
     })
 
@@ -100,10 +88,12 @@ App({
 
   // 全局的变量对象
   globalData: {
+    query: {}, // 分享进入房间的携带数据
     code:'',   // 登录后获取的零时凭证
     secene: '',  // 用户进入的场景值
     user_id: '',  // 用户的唯一标识
-    room_num: '',  // 通过分享进入房间号的值
-    ROOTURL: "https://123.207.247.38:8088",  // 后台服务器的地址
+    room_num: '',  // 用户参赛的房间号
+    endTime: '', //用户当前比赛的结束时间
+    ROOTURL: "http://172.20.120.190:8088",  // 后台服务器的地址
   }
 })

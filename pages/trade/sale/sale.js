@@ -66,7 +66,7 @@ Component({
         isEnough: true,       
         AvailableCoin: coinNum,
         TradeMoney: money,    // 交易金额
-        sale_coin_amount: amount,   // 买入数量
+        sale_coin_amount: amount === 0 ? '' : amount,   // 买入数量
       })
     },
 

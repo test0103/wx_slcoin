@@ -21,10 +21,17 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+
+  onShow: function(){
     wx.getStorage({
       key: 'isEnterGame',
       success: (res) => {
-        if(res.data) {
+        console.log(res)
+        if (res.data) {
           let userData = wx.getStorageSync('userInfo');
           this.setData({
             isEnterGame: res.data,
@@ -39,11 +46,29 @@ Page({
 
   // 获取个人资产信息
   getUserAsset: function (){
+    let temp_user = app.globalData.user_id;
+    if (temp_user === '') {
+      wx.getStorage({
+        key: 'user_id',
+        success: res => {
+          temp_user = res.data
+        }
+      });
+    }
+    let temp_room = app.globalData.room_num;
+    if (temp_room === '') {
+      wx.getStorage({
+        key: 'user_id',
+        success: res => {
+          temp_room = res.data
+        }
+      });
+    }
     wx.request({
       url: app.globalData.ROOTURL + '/homePage',
       data: {
-        user_id: app.globalData.user_id,
-        room_num: app.globalData.room_num
+        user_id: temp_user,
+        room_num: temp_room
       },
       success: res => {
         if(res.statusCode === 200) {
@@ -66,6 +91,10 @@ Page({
               }
             })
           }
+        } else {
+          wx.showToast({
+            title: '获取资产信息失败',
+          })
         }
       },
       fail: err => {

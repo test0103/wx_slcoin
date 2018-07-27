@@ -16,39 +16,39 @@ page{
 }
 .regular {
   color:#00E0FE;
-  font-size: 20rpx;
+  font-size: 24rpx;
   position: absolute;
-  bottom: 144rpx;
+  bottom: 200rpx;
   right: 54rpx;
 }
 .narrow_img {
-  height: 36rpx;
-  width: 548rpx;
+  height: 38rpx;
+  width: 570rpx;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 56rpx;
+  bottom: 80rpx;
   margin: auto;
 }
 .btn_img {
-  width: 376rpx;
-  height: 112rpx;
+  width: 392rpx;
+  height: 100rpx;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 32rpx;
+  bottom: 78rpx;
   margin: auto;
 }
 .btn_game_bottom {
-  width: 376rpx;
-  height: 110rpx;
+  width: 392rpx;
+  height: 100rpx;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 32rpx;
+  bottom: 78rpx;
   margin: auto;
   z-index: 3;
   opacity: 0;
@@ -101,6 +101,7 @@ page{
 .room_info .text_area {
   color: #00E0FE;
   font-size: 36rpx;
+  line-height: 48rpx;
   text-align: center;
   letter-spacing: 2rpx;
   position: absolute;
@@ -173,7 +174,7 @@ page{
 } 
 .notice_item {
   color: #00E0FE;
-  font-size: 20rpx;
+  font-size: 22rpx;
   line-height: 40rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -183,34 +184,35 @@ page{
 
 /**选择币种**/
 .picker_container {
+  width: 412rpx;
+  height: 60rpx;
   color: #fff;
-  font-size: 36rpx;
-  letter-spacing: 4rpx;
-  display: flex;
-  flex-direction: row;
-  width: 90%;
+  line-height: 60rpx;
+  font-size: 30rpx;
   position: relative;
   left: 43rpx;
   top: 40rpx;
+  padding: 0 10rpx;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/price_box.png')
 }
-.picker {
-  flex: 0.5;
+.picker_coin {
+  width: 30%;
+  float: left;
 }
-.picker span{
+.picker_container span{
   display: inline-block;
   width: 0;
   height: 0;
-  margin-left: 2rpx;
   border-style: solid;
-  border-width: 12px 10px 0;
+  border-width: 12rpx 12rpx 0;
   border-color: #fff transparent transparent;
 }
-.price {
-  color: #00E0FE;
+.picker_price {
+  width: 50%;
+  float: right;
   display: block;
-  padding-left: 40rpx;
-  flex: 0.4;
-  margin: auto 0px;
+  text-align: center;
 }
 
 /**交易模块样式**/
@@ -232,16 +234,12 @@ page{
 }
 .tab_item{
   flex: 1;
-  color: #fff;
-  font-size: 24rpx;
-  text-align: center;
   padding: 14rpx;
   overflow: hidden;
 }
 .tab_wrapper .tab_logo {
-  width: 80rpx;
-  height: 80rpx;
-  margin-bottom: 14rpx;
+  width: 170rpx;
+  height: 60rpx;
 }
 .tab_active{
   background: #222741;
@@ -251,19 +249,19 @@ page{
 
 .content_one {
   width: 644rpx;
-  min-height: 620rpx;
+  min-height: 700rpx;
   background-color: #222741;
   border-radius: 0 20rpx 20rpx 20rpx;
 }
 .content_two {
   width: 644rpx;
-  min-height: 620rpx;
+  min-height: 700rpx;
   background-color: #222741;
   border-radius: 20rpx;
 }
 .content_three {
   width: 644rpx;
-  min-height: 620rpx;
+  min-height: 700rpx;
   background-color: #222741;
   border-radius: 20rpx 0 20rpx 20rpx;
 }

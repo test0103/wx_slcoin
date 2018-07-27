@@ -24,18 +24,28 @@
 /*选择标签的样式*/
 .enter_store {
   width: 90%;
-  color: #fff;
-  font-size: 20rpx;
   position: absolute;
   top: 40%;
   left: 0;
   right: 0;
   margin: auto;
 }
+.can_use_money {
+  color: #fff;
+  font-size: 24rpx;
+  line-height: 36rpx;
+  width: 150rpx;
+  float: left;
+  text-align: center
+}
+.label_store {
+  float: right;
+  width: 428rpx;
+}
 .enter_store image {
   float: right;
   width: 152rpx;
-  height: 62rpx;
+  height: 50rpx;
   margin: 0 6rpx;
 }
 
@@ -51,12 +61,12 @@
 }
 .btn_oprate .trade_money text{
   color: #fff;
-  font-size: 20rpx;
+  font-size: 24rpx;
 }
 .btn_oprate .trade_money view{
   letter-spacing: 4rpx;
-  font-size: 60rpx;
-  color: #00E0FE;
+  font-size: 70rpx;
+  color: #f60;
 }
 .btn_oprate image {
   width: 470rpx;
@@ -96,6 +106,7 @@
   margin: auto;
 }
 
+/**弹出层提醒**/
 .dialog-mask{
     position: fixed;
     z-index: 1000;
@@ -118,14 +129,13 @@
 }
 .dialog-content{
     min-height: 80rpx;
-    font-size: 23rpx;
-    line-height: 1.3;
+    font-size: 30rpx;
     word-wrap: break-word;
     word-break: break-all;
-    color: #FFFFFF;
+    color: #f60;
     position: absolute;
-    top: 30%;
-    left: 32%;
+    top: 26%;
+    left: 28%;
     right: 0;
     margin: auto;
     z-index: 2000;
