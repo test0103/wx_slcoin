@@ -36,7 +36,11 @@
   <!--提示卖出成功-->
   <view class='dialog-container' hidden="{{!isShowDialog}}">
     <view class='dialog-mask'></view>
-    <image class='dialog-img' src='{{DialogUrl}}'></image>
-    <view class='dialog-content'>您已成功卖出{{sale_coin_amount}} {{coinItem.coin_type}}</view>
+    <view class='dialog-content'>
+      <view class='dialog-text'>
+        <view>卖出成功！</view>
+        您已成功卖出{{sale_coin_amount}} {{coinItem.coin_type}}
+      </view>
+    </view>
   </view>
 </view>

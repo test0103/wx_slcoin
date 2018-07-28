@@ -7,7 +7,7 @@ page{
 .assets_container {
   width: 100%;
   height: 100%;
-  background-color: #0A0F2C;
+  background-color: #0E1834;
 }
 
 .assets_area {
@@ -17,30 +17,40 @@ page{
   top: 28rpx;
   left: 56rpx;
   background-size: cover;
-  background-image: url('http://pcb8f4day.bkt.clouddn.com/bg_assets.png')
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/new_bg_assets.png')
 }
 
 /**用户头像即用户名样式**/
-.userLogo {
+.logo_box {
   width: 162rpx;
   height: 162rpx;
   border-radius: 50%;
   position: absolute;
-  top: 10rpx;
-  left: 50rpx;
-  border: 2px solid #C98F17;
+  top: 23rpx;
+  left: 53rpx;
+}
+.userLogo {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .userName {
   color: #fff;
   font-size: 30rpx;
+  font-weight: bold;
   position: absolute;
   top: 92rpx;
   left: 234rpx;
 }
 .myRank {
-  font-size: 46rpx;
+  font-size: 50rpx;
   position: absolute;
-  top: 80rpx;
+  top: 70rpx;
   right: 80rpx;
 }
 /**奖励和规则按钮样式**/
@@ -51,7 +61,7 @@ page{
   top: 212rpx;
   left: 58rpx;
   background-size: cover;
-  background-image: url('http://pcb8f4day.bkt.clouddn.com/my_reward.png')
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/new_my_reward.png')
 }
 .gameRegular{
   width: 212rpx;
@@ -60,7 +70,7 @@ page{
   top: 212rpx;
   right: 54rpx;
   background-size: cover;
-  background-image: url('http://pcb8f4day.bkt.clouddn.com/game_regular.png')
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/new_regular.png')
 }
 
 /**个人资产样式**/
@@ -70,16 +80,36 @@ page{
   flex-direction: row;
   justify-content: center;
   position: absolute;
-  top: 360rpx;
-  left: 16rpx;
+  top: 320rpx;
+  left: 0;
   right: 0;
   margin: auto;
 }
-.total_assets view {
+.assets_item{
   flex: 1;
   color: #fff;
+  font-weight: normal;
   font-size: 24rpx;
   text-align: center;
+}
+.assets_item view{
+  font-weight: bold;
+  line-height: 40rpx;
+}
+
+/** 炫耀资产的页面 **/
+.assets_container button{
+  opacity: 0;
+  z-index: 2;
+}
+.btn_show {
+  width: 356rpx;
+  height: 62rpx;
+  position: absolute;
+  top: 456rpx;
+  left: 196rpx;
+  margin: auto;
+  border-radius: 4rpx;
 }
 
 /** 币种列表 **/
@@ -87,16 +117,16 @@ page{
   width: 636rpx;
   height: 40rpx;
   position: relative;
-  top: 62rpx;
+  top: 80rpx;
   left: 57rpx;
   background-size: cover;
-  background-image: url('http://pcb8f4day.bkt.clouddn.com/profit_title.png');
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/new_profit_title.png');
 }
 .coin_list {
   width: 638rpx;
-  min-height: 440rpx;
+  min-height: 450rpx;
   position: relative;
-  top: 82rpx;
+  top: 108rpx;
   left: 56rpx;
   border-radius: 10rpx;
   background-color: #232741;
@@ -105,7 +135,8 @@ page{
   width: 600rpx;
   height: 60rpx;
   color: #00E0FE;
-  font-size: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
   line-height: 60rpx;
   margin: 0 auto;  
   border-bottom:1rpx solid #1B4F6A;
@@ -114,12 +145,12 @@ page{
   justify-content: center;
 }
 .coin_item {
-  height: 80rpx;
+  height: 90rpx;
   width: 600rpx;
   color: #fff;
   margin: 0 auto;
   font-size: 24rpx;
-  line-height: 80rpx;
+  line-height: 90rpx;
   border-bottom:1rpx solid #1B4F6A;
   display: flex;
   flex-direction: row;

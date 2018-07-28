@@ -7,7 +7,7 @@ Page({
    */
   data: {
     currentRank: 4, //当前名次
-    userLogo: 'https://wx.qlogo.cn/mmopen/vi_32/dX9dQnzy8yy0yCic43pUr0q57rwic4reWKL2Wmn9PGGhR2VmfjRkjmrb7XyvBEzVUuZa7CUm4IARkia7o7aS8lfiaA/132',
+    userLogo: '../../image/logo.png',
     isEnterGame: false, //  是否参加比赛
     isStartGame: false  // 是否开赛
   },

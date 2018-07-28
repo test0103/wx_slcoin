@@ -4,6 +4,7 @@ var Utils = require('utils/util.js');
 App({
   onLaunch: function (options) {
     this.globalData.secene = options.scene;
+    console.log('获取分享而来的信息')
     console.log(options);
 
     if (options.secene === 1044 || options.secene === 1007) {  //  通过好友的分享进入  

@@ -17,10 +17,10 @@
     <view class='room_info'>
       <!-- 人数不足，邀请好友 -->
       <view style='width:100%;height:100%;' wx:if="{{!isStartGame}}">
-        <image bindtap='StartGame' class='coin_img' src='../../image/waitgame/add_coin.png'></image>
+        <image class='coin_img' src='../../image/waitgame/add_coin.png'></image>
         <view class='text_area'>
-          <view>50人满，立即开赛</view>
-          <text>当前还差{{unFullNum}}</text>
+          <view>5人满，立即开赛</view>
+          <text>当前还差{{5 - unFullNum}}人</text>
         </view>
       </view>
       <!-- 人已满，开赛倒计时 -->
@@ -57,11 +57,10 @@
     <view class='picker_container'>
       <picker bindchange="bindPickerChange" value="{{coinIndex}}" range="{{coinArray}}">
         <view class='picker_coin'>
-          {{coinType}} 
+          {{coinType}}  <span></span>
         </view>
       </picker>
-      <span></span>
-      <text class='picker_price'>价格：{{coinMoney}}</text>
+      <text class='picker_price'>价格：{{coinMoney}} /个</text>
     </view>
     <!--交易部分-->
     <view class='tab_trade_container'>
@@ -92,14 +91,22 @@
 
   <!-- 比赛结束 -->
   <view class='over_container' wx:if="{{step === 4}}">
-    <view class='show_result'>
-      <view class='result'>
-        恭喜
+    <view class='{{myrank >= 10 ? "show_result_ok": "show_result_no"}}'>
+      <view class='result_ok' wx:if="{{myrank >= 10}}">
+        恭喜大咖！
         <view>
           你在50人的炒币比赛中排名第{{myrank}}，获得180DKT
         </view>
+        <text bindtap='ToMyReward'>查看奖励 >></text>
       </view>
-      <text bindtap='ToMyReward'>查看奖励 >></text>
+      <view class='result_no' wx:else>
+        排名第14{{myrank}} 请继续努力
+        <view>
+          看你骨骼清奇
+        </view>
+        一定是炒币潜力股
+        <text bindtap='ToMyRank'>查看排名 >></text>
+      </view>
       <view class='our_assets'>
         <view>{{our.assets}}</view>
         <view>{{our.income}}</view>
@@ -107,7 +114,7 @@
       </view>
     </view>
     <view class='over_btns'>
-      <image bindtap='AgainGame' class='over_agin' src='../../image/gameover/agin_game.png'></image>
+      <image bindtap='AgainGame' class='over_agin' src='../../image/gameover/again_game.png'></image>
       <view class='over_share'>
         <button open-type='share' id='result'></button>
       </view>

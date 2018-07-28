@@ -1,5 +1,9 @@
 var Utils = require('../../../utils/util.js');
 
+Number.prototype.toFloor = function (num) {
+  return Math.floor(this * Math.pow(10, num)) / Math.pow(10, num);
+};
+
 Component({
   /**
    * 组件的属性列表
@@ -39,13 +43,21 @@ Component({
     // 初始化组件数据
     init() {
       let amount = 0,money = 0;
+      if(this.data.AvailableMoney < 1){
+        this.setData({
+          isEnough: false,
+          buy_coin_amount: '',
+          TradeMoney: 0
+        })
+        return ;
+      }
       if(this.data.allStore === 0){
-        amount = this.data.coinItem.full;
-        money = (this.data.coinItem.full * this.data.coinItem.coin_money).toFixed(4);
+        amount = (this.data.AvailableMoney / this.data.coinItem.coin_money).toFloor(2);
+        money = (amount * this.data.coinItem.coin_money).toFixed(4);
       }
       if (this.data.halfStore === 2){
-        amount = this.data.coinItem.half;
-        money = (this.data.coinItem.half * this.data.coinItem.coin_money).toFixed(4);
+        amount = (this.data.AvailableMoney * 0.5 / this.data.coinItem.coin_money).toFloor(2);
+        money = (amount * this.data.coinItem.coin_money).toFixed(4);
       }
       this.setData({
         TradeMoney: money,    // 交易金额
@@ -53,23 +65,34 @@ Component({
       })
     },
 
+    updateMoney: function(data){
+      this.setData({
+        AvailableMoney: Number(data)
+      })
+    },
+
     // 选择全仓或者半仓
     ChooseStore(e) {
-      console.log(e)
+      if(!this.data.isEnough) {
+        return ;
+      }
+
       let storeName = e.target.id;
       if (storeName === 'all') {
+        let all_amount = (this.data.AvailableMoney / this.data.coinItem.coin_money).toFloor(2);
         this.setData({
           allStore:0,
           halfStore: 3,
-          TradeMoney: (this.data.coinItem.full * this.data.coinItem.coin_money).toFixed(4),
-          buy_coin_amount: this.data.coinItem.full
+          TradeMoney: (all_amount * this.data.coinItem.coin_money).toFixed(4),
+          buy_coin_amount: all_amount
         })
       } else if (storeName === 'half') {
+        let half_amount = (this.data.AvailableMoney * 0.5 / this.data.coinItem.coin_money).toFloor(2);
         this.setData({
           allStore: 1,
           halfStore: 2,
-          TradeMoney: (this.data.coinItem.half * this.data.coinItem.coin_money).toFixed(4),
-          buy_coin_amount: this.data.coinItem.half
+          TradeMoney: (half_amount * this.data.coinItem.coin_money).toFixed(4),
+          buy_coin_amount: half_amount
         })
       }
     },
@@ -77,20 +100,26 @@ Component({
     // 改变输入框的买入数量
     ChangNumer(e){
       let value = e.detail.value;
-      let money = value * this.data.coinItem.coin_money;
+      if (value === '0') {
+        wx.showToast({
+          title: '买入数量不能为0',
+          icon: 'none'
+        })
+        return;
+      }
+      let money = Number(value) * Number(this.data.coinItem.coin_money);
       if (money > this.data.AvailableMoney) {
         this.setData({
           isEnough: false,
-          TradeMoney: '',
-          buy_coin_amount: 0,
-          AvailableMoney: '余额不足'
+          TradeMoney: 0,
+          buy_coin_amount: ''
         })
       } else {
         this.setData({
           isEnough: true,
           allStore: 1,
           halfStore: 3,
-          TradeMoney: money.toFixed(4),
+          TradeMoney: money > 0 ? money.toFloor(4) : money,
           buy_coin_amount: value
         })
       }
@@ -99,12 +128,6 @@ Component({
     // 模拟买入
     ModifyBuy(){
       let app = getApp();
-      if (this.data.buy_coin_amount === 0){
-        wx.showToast({
-          title: '购买数量不能为0',
-        })
-        return;
-      }
       let params = {
         trade_type: 0,
         user_id: app.globalData.user_id,
@@ -118,32 +141,36 @@ Component({
         url: getApp().globalData.ROOTURL + '/transaction',
         data: params,
         success: res => {
-          // 提示买入成功
-          this.setData({
-            isShowDialog: true
-          })
-          let reback = {
-            possess: res.data.possess,
-            money: res.data.money
-          }
-          this.triggerEvent('BuySuccess', reback);
-          setTimeout(() => {
+          if(res.statusCode === 200 ) {
+            // 提示买入成功
             this.setData({
-              isShowDialog: false,
-              allStore: 1,
-              halfStore: 3,
-              TradeMoney: 0,
-              buy_coin_amount: 0
+              isShowDialog: true
             })
-          }, 1000)
+            let reback = {
+              possess: res.data.possess,
+              money: res.data.money,
+              type: 'buy'
+            }
+            this.triggerEvent('BuySuccess', reback);
+            setTimeout(() => {
+              this.setData({
+                isShowDialog: false,
+                allStore: 1,
+                halfStore: 3,
+                TradeMoney: 0,
+                buy_coin_amount: ''
+              })
+            }, 1000)
+          } else {
+            wx.showToast({
+              title: '买入失败，请稍后重试',
+              icon: 'none',
+              duration: 1500
+            })
+          }
         },
         fail: err => {
-          // 提示买入失败
-          wx.showToast({
-            title: '买入失败，请稍后重试',
-            icon: 'none',
-            duration: 1500
-          })
+         console.log('服务器内部错误')
         }
       })
     },

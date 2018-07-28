@@ -1,5 +1,9 @@
 var Utils = require('../../../utils/util.js');
 
+Number.prototype.toFloor = function (num) {
+  return Math.floor(this * Math.pow(10, num)) / Math.pow(10, num);
+};
+
 Component({
   /**
    * 组件的属性列表
@@ -27,9 +31,8 @@ Component({
       '../../../image/tradegame/half_store.png'],
     AvailableCoin: '', // 当前可用余额 
     TradeMoney: 0, // 交易金额
-    isEnough: true, // 卖出金币是否够用
+    isEnough: false, // 卖出金币是否够用
     isShowDialog: false, // 是否显示Dialog
-    isHasCoin: true, //是否含有该种货币
     DialogUrl: '../../../image/tradegame/sale_dialog.png'
   },
 
@@ -45,9 +48,7 @@ Component({
         this.setData({
           allStore: 1,
           halfStore: 3,
-          isHasCoin: false,
           isEnough: false,
-          AvailableCoin: '当前无该种货币',
           TradeMoney: money,    // 交易金额
           sale_coin_amount: amount,   // 买入数量
         })
@@ -62,16 +63,24 @@ Component({
         money = this.data.AvailableCoin * 0.5 * this.data.coinItem.coin_money;
       }
       this.setData({
-        isHasCoin: true, 
         isEnough: true,       
         AvailableCoin: coinNum,
         TradeMoney: money,    // 交易金额
-        sale_coin_amount: amount === 0 ? '' : amount,   // 买入数量
+        sale_coin_amount: amount === 0 ? '' : amount,   // 卖出数量
+      })
+    },
+
+    updateMoney: function (data) {
+      this.setData({
+        AvailableCoin: data[this.data.coinItem.coin_type]
       })
     },
 
     // 选择全仓或者半仓
     ChooseStore(e) {
+      if(!this.data.isEnough) {
+        return;
+      }
       let storeName = e.target.id;
       if (storeName === 'all') {
         this.setData({
@@ -93,20 +102,26 @@ Component({
     // 改变输入框的买入数量
     ChangNumer(e) {
       let value = e.detail.value;
-      let money = value * this.data.coinItem.coin_money;
-      if (value > this.data.AvailableCoin) {
+      if (value === '0') {
+        wx.showToast({
+          title: '买出数量不能为0',
+          icon: 'none'
+        })
+        return;
+      }
+      let money = Number(value) * Number(this.data.coinItem.coin_money);
+      if (value > Number(this.data.AvailableCoin)) {
         this.setData({
           isEnough: false,
-          TradeMoney: '',
-          sale_coin_amount: 0,
-          AvailableCoin: '余额不足'
+          TradeMoney: 0,
+          sale_coin_amount: '',
         })
       } else {
         this.setData({
           isEnough: true,
           allStore: 1,
           halfStore: 3,
-          TradeMoney: money.toFixed(4),
+          TradeMoney: money > 0 ? money.toFixed(4) : money,
           sale_coin_amount: value
         })
       }
@@ -115,12 +130,6 @@ Component({
     // 模拟卖出
     ModifySale() {
       let app = getApp();
-      if (this.data.sale_coin_amount === 0) {
-        wx.showToast({
-          title: '卖出数量不能为0',
-        })
-        return;
-      }
       let params = {
         trade_type: 1,
         user_id: app.globalData.user_id,
@@ -134,32 +143,36 @@ Component({
         url: getApp().globalData.ROOTURL + '/transaction',
         data: params,
         success: res => {
-          // 提示卖出成功
-          this.setData({
-            isShowDialog: true
-          })
-          let reback = {
-            possess: res.data.possess,
-            money: res.data.money
-          }
-          this.triggerEvent('SaleSuccess', reback);
-          setTimeout(() => {
+          if(res.statusCode === 200) {
+            // 提示卖出成功
             this.setData({
-              isShowDialog: false,
-              allStore: 1,
-              halfStore: 3,
-              TradeMoney: 0,
-              sale_coin_amount: 0
+              isShowDialog: true
             })
-          }, 1000)
+            let reback = {
+              possess: res.data.possess,
+              money: res.data.money,
+              type: 'sale'
+            }
+            this.triggerEvent('SaleSuccess', reback);
+            setTimeout(() => {
+              this.setData({
+                isShowDialog: false,
+                allStore: 1,
+                halfStore: 3,
+                TradeMoney: 0,
+                sale_coin_amount: 0
+              })
+            }, 1000)
+          } else {
+            wx.showToast({
+              title: '买入失败，请稍后重试',
+              icon: 'none',
+              duration: 1500
+            })
+          }
         },
         fail: err => {
-          // 提示卖出失败
-          wx.showToast({
-            title: '买入失败，请稍后重试',
-            icon: 'none',
-            duration: 1500
-          })
+          console.log(err)
         }
       })
     },

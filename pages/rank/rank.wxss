@@ -14,6 +14,7 @@
 .my_rank{
   color: #fff;
   font-size: 24rpx;
+  font-weight: bolder;
   position: absolute;
   top: 60rpx;
   left: 24rpx;
@@ -35,7 +36,16 @@
 .rank_three text{
   color: #fff;
   font-size: 24rpx;
+  font-weight: bold;
   display: block;
+  text-align: center;
+}
+.rank_one view,
+.rank_two view,
+.rank_three view{
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: normal;
   text-align: center;
 }
 /*第二名样式*/
@@ -69,6 +79,7 @@
   height: 28rpx;
   color: #fff;
   font-size: 24rpx;
+  font-weight: bold;
   position: relative;
   margin: 18rpx auto;
   background-image: url('http://pcb8f4day.bkt.clouddn.com/bold_line.png');

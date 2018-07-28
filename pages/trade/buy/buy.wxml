@@ -36,7 +36,11 @@
   <!--提示买入成功的Dialog-->
   <view class='dialog-container' hidden="{{!isShowDialog}}">
     <view class='dialog-mask'></view>
-    <image class='dialog-img' src='{{DialogUrl}}'></image>
-    <view class='dialog-content'>您成功买入 BTC 2.33 {{buy_coin_amount}} {{coinItem.coin_type}}</view>
+    <view class='dialog-content'>
+      <view class='dialog-text'>
+        <view>买入成功！</view>
+        您成功买入 {{buy_coin_amount}} {{coinItem.coin_type}}
+      </view>
+    </view>
   </view>
 </view>

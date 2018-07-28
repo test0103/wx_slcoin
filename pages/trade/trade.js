@@ -3,7 +3,7 @@ const app = getApp();
 var coinTimer;  //获取币种信息的定时器
 var waitTime; // 等待比赛开始的定时器
 var timer;  //比赛倒计时的定时器
-var total_second = 2 * 60 * 60; // 一天的倒计时
+var total_second = 2 * 60 * 60 * 1000; // 2h的倒计时
 
 Page({
   /**
@@ -16,7 +16,7 @@ Page({
     step: 1, // 表示进行的步骤：1-未参赛，2-邀请好友，3-开赛进行交易，4-比赛结束
     isEnterGame: false, // 是否参加比赛
     isStartGame: false, // 是否开赛
-    unFullNum: 49, // 当前房间人数
+    unFullNum: 1, // 当前房间人数
     countURL: '',  // 开赛前倒计时的数字图标 
     clock: "00:00:00",  // 开赛后的倒计时
     coinType: '', // 当前币种
@@ -30,14 +30,25 @@ Page({
     our: {
       assets: '20000',  // 目前的资产
       possess: '', //目前持有的币种
-    }
+      income: '',
+      yield: ''
+    },
+    query: {}  //保存分享而来的参数信息
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(app);
+    console.log(options);
+    if(options.user_id) {
+      this.setData({
+        query: {
+          from: options.user_id,
+          room_num: options.room_num
+        }
+      })
+    }
     wx.getStorage({
       key: 'room_num',
       success: res => {
@@ -104,9 +115,9 @@ Page({
       wx.getStorage({
         key: 'endTime',
         success: (res) => {
-          let end = Math.floor(new Date(res.data).getTime() / 1000);
+          let end = new Date(res.data).getTime();
           console.log(end);
-          let now = Math.floor(new Date().getTime() / 1000);
+          let now = new Date().getTime();
           console.log(now);
           total_second = end - now;
           CountOneDay(this);
@@ -166,11 +177,6 @@ Page({
           params.code = res.code;
           params.time = Utils.formatTime(new Date());
 
-          if (app.globalData.query.from) {
-            params.form = app.globalData.query.from;
-            params.room_num = app.globalData.query.room_num;
-          }
-
           wx.request({
             url: 'http://172.20.120.190:8088/authorization',
             data: params,
@@ -181,6 +187,7 @@ Page({
                   user_id: res.data.user_id
                 })
                 app.globalData.user_id = res.data.user_id;
+                console.log(res.data.user_id)
                 console.log('缓存user_id！');
                 wx.setStorage({
                   key: 'user_id',
@@ -220,7 +227,6 @@ Page({
   // 立即参赛
   joinGame: function (formId) {
     console.log('获取formId后，立即参赛')
-    console.log(this.data.user_id);
     let temp = app.globalData.user_id;
 
     if(temp === ''){
@@ -237,40 +243,54 @@ Page({
         console.log('缓存获取成功：' + temp + '33')
       }
     }
-    console.log(temp)
-
+    let params = {
+      user_id: temp,
+      formId: formId,
+      time: Utils.formatTime(new Date())
+    }
+    if (this.data.query.from) {
+      params.from = this.data.query.from;
+      params.room_num = this.data.query.room_num;
+    }
     wx.request({
       url: app.globalData.ROOTURL + '/game/join',
-      data: {
-        user_id: temp,
-        formId: formId,
-        time: Utils.formatTime(new Date())
-      },
+      data: params,
       success: res => {
-        console.log('2222res')
         if (res.statusCode === 200) {
           console.log('参赛成功获取房间号')
-          app.globalData.room_num = res.data.roomNum;
-          console.log('缓存房间号')
+          let currenStep = 2;
+          app.globalData.room_num = res.data.room_num;
+          if (res.data.isStartGame && res.data.end_time) { //  异地登陆后，该用户以及参见过比赛，且该比赛尚未结束
+            currenStep = 3;
+            wx.setStorage({
+              key: "isStartGame",
+              data: true
+            })
+            wx.setStorage({
+              key: "endTime",
+              data: res.data.end_time
+            })
+          }
           this.setData({
-            step: 2,
-            room_num: res.data.roomNum,
+            step: currenStep,
+            room_num: res.data.room_num,
             isEnterGame: true,
+            isStartGame: currenStep === 3,
             unFullNum: res.data.number
           })
           wx.setStorage({
             key: "step",
-            data: 2
+            data: currenStep
+          })
+          wx.setStorage({
+            key: "room_num",
+            data: res.data.room_num
           })
           wx.setStorage({
             key: "isEnterGame",
             data: true
           })
-          wx.setStorage({
-            key: "room_num",
-            data: res.data.roomNum
-          })
-          this.JugeTheStatus(2);  //登录后变更状态，需要重新初始化数据
+          this.JugeTheStatus(currenStep);  //登录后变更状态，需要重新初始化数据
         } else {
           wx.showToast({
             title: '参赛失败',
@@ -289,7 +309,6 @@ Page({
     console.log('开始获取房间信息')
     let temp_user = app.globalData.user_id;
     let temp_room = app.globalData.room_num;
-    console.log(this.data.room_num);
 
     if (temp_room === ''){
       if (this.data.room_num !== '' && this.data.room_num !== undefined){
@@ -331,7 +350,7 @@ Page({
           this.setData({
             unFullNum: res.data.number
           })
-
+          console.log(this.data)
           if(res.data.number >= 5) {
             wx.setStorage({
               key: 'endTime',
@@ -353,7 +372,6 @@ Page({
         waitTime = setTimeout(() => {
           this.getRoomInfo();
         }, 5 * 1000);
-
       },
       fail: err => {
         console.error('获取房间信息失败！');
@@ -500,14 +518,35 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
-    } else if (res.from === 'menu') {
-      // 来自菜单的转发按钮
+    let temp_user = app.globalData.user_id;
+    let temp_room = app.globalData.room_num;
+    if (temp_room === '') {
+      if (this.data.room_num !== '' && this.data.room_num !== undefined) {
+        temp_room = this.data.room_num;
+      } else {
+        wx.getStorage({
+          key: 'room_num',
+          success: res => {
+            temp_room = res.data;
+          },
+        })
+      }
+    }
+    if (temp_user === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp_user = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp_user = res.data;
+          },
+        })
+      }
     }
     return {
       title: '炒币大咖',
-      path: '/pages/trade/trade?room_num='+ app.globalData.room_num +'&user_id='+app.globalData.user_id,
+      path: '/pages/trade/trade?room_num=' + temp_room + '&user_id=' + temp_user,
     }
   },
 
@@ -529,8 +568,8 @@ Page({
       data: true,
     })
     count_down(this);
-    let end = Math.floor(new Date(endTime).getTime() / 1000);
-    let now = Math.floor(new Date().getTime() / 1000);
+    let end = new Date(endTime).getTime();
+    let now = new Date().getTime();
     total_second = end - now;
   },
 
@@ -575,6 +614,7 @@ Page({
 
   // 查看本人的当场比赛的交易记录
   getUserRecords: function (){
+    console.log('获取交易记录')
     let temp = app.globalData.user_id;
     if (temp === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
@@ -596,6 +636,7 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if (res.statusCode === 200) {
           this.setData({
             recordList: res.data
@@ -615,12 +656,20 @@ Page({
 
   // 买入卖出成功后，更新个人资产
   ChangeMyAssets: function(obj) {
+    console.log(obj)
+    let refresh;
+    if(obj.detail.type === 'buy'){
+      refresh = this.selectComponent("#buy").updateMoney(obj.detail.money);
+    } else {
+      refresh = this.selectComponent("#sale").updateMoney(DealMyOwn(obj.detail.possess));
+    }
+    
     this.setData({
       our: {
         assets: obj.detail.money,
         possess: DealMyOwn(obj.detail.possess)
       }
-    })
+    }, refresh)
   },
 
   // 比赛结束
@@ -709,6 +758,13 @@ Page({
     wx.navigateTo({
       url: '/pages/reward/reward',
     })
+  },
+
+  //  查看排名
+  ToMyRank: function () {
+    wx.switchTab({
+      url: '/pages/rank/rank',
+    })
   }
 })
 
@@ -759,7 +815,7 @@ function CountOneDay(that) {
     return;
   }
   timer = setTimeout(function () {
-    total_second -= 1;
+    total_second -= 1000;
     CountOneDay(that);
   }, 1000)
 }

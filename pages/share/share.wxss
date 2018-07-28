@@ -16,33 +16,33 @@
   margin: 0 auto;
 }
 .share_logo {
-  width: 136rpx;
-  height: 136rpx;
+  width: 142rpx;
+  height: 142rpx;
   border-radius: 50%;
   position: absolute;
   top: 24rpx;
-  left: -8rpx;
+  left: -9rpx;
   right: 0;
   margin: 0 auto;
 }
 .share_title .share_btn {
-  width: 260rpx;
+  width: 312rpx;
   height: 80rpx;
   background-size: cover;
-  background-image: url('http://pcb8f4day.bkt.clouddn.com/btn_share.png');
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/new_btn_share.png');
   position: absolute;
-  bottom: 30rpx;
+  bottom: 28rpx;
   left: 0;
   right: 0;
   margin: 0 auto;
 }
 .share_btn button{
-  width: 260rpx;
+  width: 312rpx;
   height: 80rpx;
   opacity: 0;
   z-index: 2;
   position: absolute;
-  bottom: 30rpx;
+  bottom: 28rpx;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -63,7 +63,7 @@
   position: relative;
   top: 54rpx;
   margin: 0 auto;
-  min-height: 600rpx;
+  min-height: 540rpx;
 }
 .list_item {
   height: 80rpx;
@@ -104,3 +104,18 @@
   line-height: 80rpx;
   text-align: center;
 }
+
+/** 没有邀请好友样式 **/
+ .no_friends {
+  position: relative;
+  top: 54rpx;
+  margin: 0 auto;
+  min-height: 540rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+ }
+ .no_friends image {
+   width: 446rpx;
+   height: 490rpx;
+ }

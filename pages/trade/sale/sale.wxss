@@ -2,10 +2,10 @@
 /*输入框的样式*/
 .enter_num input{
   height: 80rpx;
-  width: 580rpx;
+  width: 592rpx;
   font-size: 36rpx;
   position: absolute;
-  top: 26%;
+  top: 18%;
   left: 0;
   right: 0;
   margin: auto;
@@ -14,9 +14,9 @@
 }
 .enter_num image {
   height: 80rpx;
-  width: 580rpx;
+  width: 592rpx;
   position: absolute;
-  top: 26%;
+  top: 18%;
   left: 0;
   right: 0;
   margin: auto;
@@ -25,7 +25,7 @@
 .enter_store {
   width: 90%;
   position: absolute;
-  top: 40%;
+  top: 32%;
   left: 0;
   right: 0;
   margin: auto;
@@ -53,7 +53,7 @@
 .btn_oprate {
   width: 80%;
   position: absolute;
-  top: 50%;
+  top: 44%;
   left: 0;
   right: 0;
   margin: auto;
@@ -66,6 +66,7 @@
 .btn_oprate .trade_money view{
   letter-spacing: 4rpx;
   font-size: 70rpx;
+  font-weight: lighter;
   color: #f60;
 }
 .btn_oprate image {
@@ -80,7 +81,7 @@
   height: 80rpx;
   padding: 10rpx 0;
   position: absolute;
-  top: 88%;
+  top: 82%;
   left: 0;
   right: 0;
   margin: auto;
@@ -91,7 +92,6 @@
   opacity: 0;
   z-index: 2;
   position: absolute;
-  bottom: 30rpx;
   left: 0;
   right: 0;
   margin: auto;
@@ -100,7 +100,6 @@
   width: 260rpx;
   height: 80rpx;
   position: absolute;
-  bottom: 30rpx;  
   left: 0;
   right: 0;
   margin: auto;
@@ -117,26 +116,29 @@
     bottom: 0;
     background: rgba(10, 10, 10, 0.5);
 }
-.dialog-img{
-    width: 462rpx;
-    height: 400rpx; 
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    z-index: 2000;
+.dialog-content {
+  width: 464rpx;
+  height: 400rpx; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 2000;
+  background-size: cover;
+  background-image: url('http://pcb8f4day.bkt.clouddn.com/bg_dialog.png');
 }
-.dialog-content{
-    min-height: 80rpx;
-    font-size: 30rpx;
-    word-wrap: break-word;
-    word-break: break-all;
-    color: #f60;
-    position: absolute;
-    top: 26%;
-    left: 28%;
-    right: 0;
-    margin: auto;
-    z-index: 2000;
+.dialog-text{
+  font-size: 30rpx;
+  line-height: 70rpx;
+  word-wrap: break-word;
+  word-break: break-all;
+  color: #f60;
+  position: absolute;
+  top: 30%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 2000;
+  text-align: center;
 }
