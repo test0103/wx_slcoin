@@ -53,11 +53,11 @@ Component({
       }
       if(this.data.allStore === 0){
         amount = (this.data.AvailableMoney / this.data.coinItem.coin_money).toFloor(2);
-        money = (amount * this.data.coinItem.coin_money).toFixed(4);
+        money = (amount * this.data.coinItem.coin_money).toFloor(4);
       }
       if (this.data.halfStore === 2){
         amount = (this.data.AvailableMoney * 0.5 / this.data.coinItem.coin_money).toFloor(2);
-        money = (amount * this.data.coinItem.coin_money).toFixed(4);
+        money = (amount * this.data.coinItem.coin_money).toFloor(4);
       }
       this.setData({
         TradeMoney: money,    // 交易金额
@@ -83,7 +83,7 @@ Component({
         this.setData({
           allStore:0,
           halfStore: 3,
-          TradeMoney: (all_amount * this.data.coinItem.coin_money).toFixed(4),
+          TradeMoney: (all_amount * this.data.coinItem.coin_money).toFloor(4),
           buy_coin_amount: all_amount
         })
       } else if (storeName === 'half') {
@@ -91,7 +91,7 @@ Component({
         this.setData({
           allStore: 1,
           halfStore: 2,
-          TradeMoney: (half_amount * this.data.coinItem.coin_money).toFixed(4),
+          TradeMoney: (half_amount * this.data.coinItem.coin_money).toFloor(4),
           buy_coin_amount: half_amount
         })
       }
@@ -108,7 +108,7 @@ Component({
         return;
       }
       let money = Number(value) * Number(this.data.coinItem.coin_money);
-      if (money > this.data.AvailableMoney) {
+      if (money > Number(this.data.AvailableMoney)) {
         this.setData({
           isEnough: false,
           TradeMoney: 0,
@@ -127,6 +127,13 @@ Component({
       
     // 模拟买入
     ModifyBuy(){
+      if (Number(this.data.buy_coin_amount) === 0){
+        wx.showToast({
+          title: '输入不能为空',
+          icon: 'none'
+        })
+        return ;
+      }
       let app = getApp();
       let params = {
         trade_type: 0,
@@ -141,7 +148,7 @@ Component({
         url: getApp().globalData.ROOTURL + '/transaction',
         data: params,
         success: res => {
-          if(res.statusCode === 200 ) {
+          if (res.statusCode === 200 && res.data.errno !== -1) {
             // 提示买入成功
             this.setData({
               isShowDialog: true

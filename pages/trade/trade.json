@@ -4,5 +4,7 @@
     "Buy": "buy/buy",
     "Sale": "sale/sale",
     "Record": "record/record"
-  }
+  },
+  "disableScroll": true,
+  "enablePullDownRefresh": false
 }

@@ -6,7 +6,7 @@
       <text>成交价格</text>
       <text>时间</text> 
     </view>
-    <!-- <block wx:for="{{RecordList}}" wx:for-item="item" wx:key="index">
+    <!-- <block wx:for="{{recordList}}" wx:for-item="item" wx:key="index">
       <view class="record_item {{item.tradeType === 0?'record_buy':'record_sale'}}">
         <view class='trade_type'></view>
         <text>{{item.coinType}}</text>
@@ -15,7 +15,7 @@
         <text>{{item.changeTime}}</text> 
       </view>
     </block> -->
-     <block wx:for="{{RecordList}}" wx:for-item="item" wx:key="index">
+     <block wx:for="{{recordList}}" wx:for-item="item" wx:key="index">
       <view class="record_item">
         <view class='trade_type'>
           <image class='trade_logo' src='{{item.tradeType === 0?"../../../image/tradegame/buy_logo.png":"../../../image/tradegame/sale_logo.png"}}'></image>

@@ -1,5 +1,34 @@
-<view>
-  <text>二级详情页</text>
-  <import src="../../template/FooterTab/FooterTab.wxml"/>
-  <template is="tabBar" data="{{tabBar:bindData.tabBar}}"/>
+<view class='regular_container'>
+  <image class='regular_title' src='../../image/regular/bg_regular.png'></image>
+  <view class='regular_content'>
+    <view>
+      1. 每个参赛用户将获得总价值为 20000 的虚拟本金，每场比赛人数为50人，时间为24小时，人满开赛。
+    </view>
+
+    <view>
+      2. 每邀请一位用户，可获得额外 20000 本金。
+    </view>
+    
+    <view>
+      3. 排名的唯一依据是以用户持仓盈亏为依据，也就是按每个用户在排名时刻账户中的总资产-赠送本金。
+    </view>
+    
+    <view>
+      4. 大赛进行期间，选手「排行」将实时更新，请随时关注。
+    </view>
+    
+    <view>
+      5. 比赛结束后，将按照比赛期间最后一刻的富豪排行榜，给获得名次的用户发放以下奖励：
+      <text>第1-10名 奖励 20 ZBTC</text>
+    </view>
+    
+    <view>
+      6. 比赛结束后，当次比赛虚拟资产清空，保留名次记录以及奖励。
+    </view>
+    
+    <view>
+      7. 本程序当前为测试阶段，后续细则将于更新后发布。
+    </view>
+    
+  </view>
 </view>

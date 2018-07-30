@@ -53,7 +53,7 @@ Component({
           sale_coin_amount: amount,   // 买入数量
         })
         return ;
-      }     
+      } 
       if (this.data.allStore === 0) {
         amount = this.data.AvailableCoin;
         money = this.data.AvailableCoin * this.data.coinItem.coin_money;
@@ -86,7 +86,7 @@ Component({
         this.setData({
           allStore: 0,
           halfStore: 3,
-          TradeMoney: (this.data.AvailableCoin * this.data.coinItem.coin_money).toFixed(4),
+          TradeMoney: (this.data.AvailableCoin * this.data.coinItem.coin_money).toFloor(4),
           sale_coin_amount: this.data.AvailableCoin
         })
       } else if (storeName === 'half') {
@@ -121,7 +121,7 @@ Component({
           isEnough: true,
           allStore: 1,
           halfStore: 3,
-          TradeMoney: money > 0 ? money.toFixed(4) : money,
+          TradeMoney: money > 0 ? money.toFloor(4) : money,
           sale_coin_amount: value
         })
       }
@@ -129,6 +129,13 @@ Component({
 
     // 模拟卖出
     ModifySale() {
+      if (Number(this.data.sale_coin_amount) === 0) {
+        wx.showToast({
+          title: '输入不能为空',
+          icon: 'none'
+        })
+        return;
+      }
       let app = getApp();
       let params = {
         trade_type: 1,
@@ -139,11 +146,13 @@ Component({
         amount: this.data.sale_coin_amount,
         time: Utils.formatTime(new Date())
       }
+      console.log(params)
       wx.request({
         url: getApp().globalData.ROOTURL + '/transaction',
         data: params,
         success: res => {
-          if(res.statusCode === 200) {
+          if(res.statusCode === 200 && res.data.errno !== -1) {
+            console.log(res)
             // 提示卖出成功
             this.setData({
               isShowDialog: true
@@ -165,7 +174,7 @@ Component({
             }, 1000)
           } else {
             wx.showToast({
-              title: '买入失败，请稍后重试',
+              title: '卖出失败，请稍后重试',
               icon: 'none',
               duration: 1500
             })

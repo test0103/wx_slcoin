@@ -1,7 +1,7 @@
 <view style="width:100%;height:100%;">
   <!-- 输入框 -->
   <view class='enter_num'>
-    <input placeholder="数量" type='number' bindinput="ChangNumer" value='{{buy_coin_amount}}'/>
+    <input placeholder="数量" type='digit' bindinput="ChangNumer" value='{{buy_coin_amount}}'/>
     <image src='../../../image/tradegame/input.png'></image>
   </view>
   <!-- 全仓或半仓 -->

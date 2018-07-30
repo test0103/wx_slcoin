@@ -1,6 +1,22 @@
 <view id='ShowArea'>
   <!-- 参赛前 -->
   <view class="start_container" wx:if="{{step === 1}}">
+    <!-- 新手教程 -->
+    <view class='new_person_container' wx:if="{{isWatchNew}}">
+      <view class='new_mask'></view>
+      <swiper class='new_person_swiper' current="{{currentSlide}}">
+        <swiper-item>
+          <text class='jump_new' bindtap='toJumpTheNew'>跳过 >></text>
+          <image class='slide_one' src='../../image/newperson/new_one.png'></image>
+          <image class='new_narrow' bindtap='toNextNew' src='../../image/newperson/new_narrow.gif'></image>
+        </swiper-item>
+        <swiper-item>
+          <image class='slide_two' src='../../image/newperson/new_two.png'></image>
+          <text class='start_feel' bindtap='toJumpTheNew'>开始体验 >></text>
+        </swiper-item>
+      </swiper>
+    </view>
+
     <view class='start_game'>
       <text bindtap='ViewToRegular' class='regular'>玩法介绍 >></text>
       <image class='narrow_img' src='../../image/waitgame/narrow.gif'></image>
@@ -40,8 +56,12 @@
   <!-- 已开赛，开始交易 -->
   <view class='trade_container' wx:if="{{step === 3}}">
     <!--倒计时-->
-    <text class='count_time'>剩余时间：{{clock}}</text>
-    <image class='count_slider' src='../../image/tradegame/count_silder.png'></image>
+    <view class='count_area'>
+      <text class='count_time'>剩余时间：{{clock}}</text>
+      <view >
+        <image class='count_slider' src='{{clockURL}}'></image>
+      </view>
+    </view>
     <!--公告栏-->
     <view class="notice_container">
       <image class='img_notice' src='../../image/tradegame/notice.png'></image>
@@ -91,16 +111,16 @@
 
   <!-- 比赛结束 -->
   <view class='over_container' wx:if="{{step === 4}}">
-    <view class='{{myrank >= 10 ? "show_result_ok": "show_result_no"}}'>
-      <view class='result_ok' wx:if="{{myrank >= 10}}">
+    <view class='{{myrank <= 1 ? "show_result_ok": "show_result_no"}}'>
+      <view class='result_ok' wx:if="{{myrank <= 1}}">
         恭喜大咖！
         <view>
-          你在50人的炒币比赛中排名第{{myrank}}，获得180DKT
+          你在5人的炒币比赛中排名第{{myrank}}，获得20 ZBTC
         </view>
         <text bindtap='ToMyReward'>查看奖励 >></text>
       </view>
       <view class='result_no' wx:else>
-        排名第14{{myrank}} 请继续努力
+        排名第{{myrank}} ,请继续努力
         <view>
           看你骨骼清奇
         </view>

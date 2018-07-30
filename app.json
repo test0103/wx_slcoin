@@ -4,7 +4,8 @@
     "pages/rank/rank",
     "pages/assets/assets",
     "pages/share/share",
-    "pages/regular/regular"
+    "pages/regular/regular",
+    "pages/reward/reward"
   ],
   "window":{
     "navigationBarBackgroundColor": "#0A0F2C",

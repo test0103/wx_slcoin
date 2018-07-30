@@ -46,6 +46,7 @@ Page({
   },
   // 获取排名信息
   getRankInfo: function() {
+    console.log('rank');
     let temp_user = app.globalData.user_id;
     if (temp_user === '') {
       wx.getStorage({
@@ -75,7 +76,11 @@ Page({
           let len = res.data.length;
           for(let i=0;i<len-1;i++){
             if(typeof res.data[i] === 'object'){
-              res.data[i].wei_pic = decodeURIComponent(res.data[i].wei_pic);
+              if(res.data[i].wei_pic) {
+                res.data[i].wei_pic = decodeURIComponent(res.data[i].wei_pic);
+              } else {
+                res.data[i].wei_pic = '../../image/logo.png';
+              }
             }
           }
           console.log(res.data);

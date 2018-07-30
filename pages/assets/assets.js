@@ -84,7 +84,7 @@ Page({
           } else {
             this.setData({
               myRank: res.data.userRank,
-              coinList: res.data.coins,
+              coinList: res.data.coins || [],
               total: {
                 assets: res.data.asset,
                 profit: res.data.income,
@@ -136,7 +136,7 @@ Page({
   //查看奖励页
   ToMyReward:function () {
     wx.navigateTo({
-      url: 'pages/myreward/myreward',
+      url: '/pages/reward/reward',
     })
   },
   //查看我的规则

@@ -54,6 +54,57 @@ page{
   opacity: 0;
 }
 
+/*** 新手教程样式 ***/
+.new_person_container{
+  position: fixed;
+  z-index: 100;
+  height: 100%;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(10, 10, 10, 0.5);
+}
+.new_person_swiper {
+  width: 604rpx;
+  height: 690rpx; 
+  position: absolute;
+  top: 18%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 200;
+}
+.slide_one {
+  width: 604rpx;
+  height: 690rpx; 
+}
+.jump_new {
+  font-size: 24rpx;
+  color: #00E0FE;
+  position: absolute;
+  top: 28rpx;
+  right: 28rpx;
+}
+.new_narrow {
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute;
+  bottom: 128rpx;
+  right: 50rpx;
+  z-index: 300;
+}
+.slide_two {
+  width: 604rpx;
+  height: 690rpx; 
+}
+.start_feel {
+  font-size: 24rpx;
+  color: #00E0FE;
+  position: absolute;
+  bottom: 40rpx;
+  right: 46rpx;
+}
 
 
 /** 立即参赛页面样式 **/
@@ -138,29 +189,33 @@ page{
   height: 100%;
   background-color: #0E1834;
 }
+.count_area {
+  width: 640rpx;
+  height: 60rpx;
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
 .count_time {
   display: block;
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #FFB10A;
   float: right;
-  margin: 28rpx 47rpx 10rpx;
+  padding: 28rpx 10rpx 0;
   letter-spacing: 2rpx;
 }
 .count_slider {
-  width: 666rpx;
-  height: 40rpx;
-  margin: 0rpx auto;
-  position: relative;
-  left: 43rpx;
-  right: 42rpx;
+  width: 640rpx;
+  height: 16rpx;
 }
 
 /** 公告栏 **/
 .notice_container{
   height: 40rpx;
-  margin: 4rpx auto;
   position: relative;
-  left: 43rpx;
+  top: 46rpx;
+  left: 50rpx;
 }
 .img_notice {
   height: 40rpx;
@@ -191,13 +246,13 @@ page{
   font-size: 30rpx;
   position: relative;
   left: 54rpx;
-  top: 40rpx;
+  top: 70rpx;
   padding: 0 20rpx;
   background-size: cover;
   background-image: url('http://pcb8f4day.bkt.clouddn.com/price_box.png')
 }
 .picker_coin {
-  width: 40%;
+  width: 30%;
   float: left;
 }
 .picker_container span{
@@ -209,7 +264,7 @@ page{
   border-color: #fff transparent transparent;
 }
 .picker_price {
-  width: 60%;
+  width: 70%;
   float: right;
   display: block;
   text-align: center;

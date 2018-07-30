@@ -1,0 +1,36 @@
+page{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0E1834;
+}
+.regular_container {
+  width: 100%;
+  height: 100%;
+}
+
+.regular_title {
+  width: 638rpx;
+  height: 164rpx;
+  position: relative;
+  left: 56rpx;
+  top: 26rpx;
+  margin: 0 auto;
+}
+
+.regular_content {
+  width: 640rpx;
+  position: relative;
+  top:46rpx;
+  margin: auto;
+  color: #fff;
+  font-size: 24rpx;
+  line-height: 40rpx;
+}
+.regular_content view{
+  margin: 10rpx auto;
+}
+.regular_content text{
+  display: block;
+  color: #f60;
+}

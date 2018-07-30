@@ -2,6 +2,7 @@ page{
   width:100%;
   height:100%;
   overflow: hidden;
+  background-color: #0E1834;
   font-family: "PingFang-SC-Regular",
 }
 .assets_container {
@@ -124,7 +125,7 @@ page{
 }
 .coin_list {
   width: 638rpx;
-  min-height: 450rpx;
+  height: 440rpx;
   position: relative;
   top: 108rpx;
   left: 56rpx;
@@ -145,12 +146,12 @@ page{
   justify-content: center;
 }
 .coin_item {
-  height: 90rpx;
+  height: 80rpx;
   width: 600rpx;
   color: #fff;
   margin: 0 auto;
   font-size: 24rpx;
-  line-height: 90rpx;
+  line-height: 80rpx;
   border-bottom:1rpx solid #1B4F6A;
   display: flex;
   flex-direction: row;

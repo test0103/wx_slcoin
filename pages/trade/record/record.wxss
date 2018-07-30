@@ -1,5 +1,5 @@
 .record_container {
-  height: 600rpx;
+  height: 650rpx;
   position: relative;
   margin: 0 auto;
 }
@@ -61,7 +61,7 @@
 .record_item {
   color: #fff;
   font-size: 24rpx;
-  margin: 18rpx auto 20rpx;
+  margin: 14rpx auto 20rpx;
   position: relative;
   width: 604rpx;
   height: 60rpx;

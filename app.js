@@ -4,9 +4,7 @@ var Utils = require('utils/util.js');
 App({
   onLaunch: function (options) {
     this.globalData.secene = options.scene;
-    console.log('获取分享而来的信息')
-    console.log(options);
-
+    
     if (options.secene === 1044 || options.secene === 1007) {  //  通过好友的分享进入  
       this.globalData.query = options.query;
     }
@@ -35,10 +33,8 @@ App({
           success: res => {
             if (res.data !== '') {
               if(new Date(res.data).getTime() > new Date().getTime()){
-                console.log(11)
                 this.globalData.endTime = res.data;
               } else {
-                console.log(22)
                 wx.setStorage({
                   key: 'step',
                   data: 4,
@@ -95,6 +91,6 @@ App({
     user_id: '',  // 用户的唯一标识
     room_num: '',  // 用户参赛的房间号
     endTime: '', //用户当前比赛的结束时间
-    ROOTURL: "http://172.20.120.190:8088",  // 后台服务器的地址
+    ROOTURL: "https://www.luoyunyu.com",  // 后台服务器的地址
   }
 })

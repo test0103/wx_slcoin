@@ -3,21 +3,21 @@
     <view class='rank_head'>
       <view class='my_rank'>当前名次：{{currentRank}}</view>
       <view class='rank_one'>
-        <image src="{{HeadRank[0].wei_pic || userLogo}}"></image>
+        <image src="{{HeadRank[0].wei_pic}}"></image>
         <text>{{HeadRank[0].nickname}}</text>
         <view style='color:#FFB10A;'>{{HeadRank[0].income}}</view>
         <view>{{HeadRank[0].yield}}</view>
       </view>
 
       <view class='rank_two'>
-        <image src="{{HeadRank[1].wei_pic || userLogo}}"></image>
+        <image src="{{HeadRank[1].wei_pic}}"></image>
         <text>{{HeadRank[1].nickname}}</text>
         <view style='color:#FFB10A;'>{{HeadRank[1].income}}</view>
         <view>{{HeadRank[1].yield}}</view>
       </view>
       
       <view class='rank_three'>
-        <image src="{{HeadRank[2].wei_pc || userLogo}}"></image>
+        <image src="{{HeadRank[2].wei_pic}}"></image>
         <text>{{HeadRank[2].nickname}}</text>
         <view style='color:#FFB10A;'>{{HeadRank[2].income}}</view>
         <view>{{HeadRank[2].yield}}</view>
@@ -32,7 +32,7 @@
       <block wx:for="{{RankList}}" wx:for-item="item" wx:key="indexr">
         <view class="rank_item {{item.rank == currentRank?'It_My':''}}">
           <text class="rank_index">{{item.rank}}</text>
-          <image src='{{item.wei_pic || userLogo}}'></image>
+          <image src='{{item.wei_pic}}'></image>
           <text class='rank_name'>{{item.nickname}}</text> 
           <text class='rank_profit'>{{item.income}}</text>
           <text class='rank_yield'>{{item.yield}}</text> 
