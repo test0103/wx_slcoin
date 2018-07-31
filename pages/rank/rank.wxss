@@ -153,11 +153,20 @@ page{
   background-color: #0A0F2C;
 }
 .no_rank {
-  width: 448rpx;
-  height: 490rpx;
+  font-size: 26rpx;
+  color: #fff;
+  text-align: center;
+  width: 380rpx;
+  height: 500rpx;
   position: absolute;
   top: 166rpx;
-  left: 190rpx;
+  left: 210rpx;
+}
+.no_rank image{
+  width: 380rpx;
+  height: 500rpx;
+  position: relative;
+  top: 0rpx;
 }
 .to_Join {
   width: 374rpx;

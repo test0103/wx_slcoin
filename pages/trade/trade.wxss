@@ -87,10 +87,10 @@ page{
   right: 28rpx;
 }
 .new_narrow {
-  width: 40rpx;
-  height: 40rpx;
+  width: 50rpx;
+  height: 50rpx;
   position: absolute;
-  bottom: 128rpx;
+  bottom: 120rpx;
   right: 50rpx;
   z-index: 300;
 }
@@ -99,10 +99,10 @@ page{
   height: 690rpx; 
 }
 .start_feel {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #00E0FE;
   position: absolute;
-  bottom: 40rpx;
+  bottom: 30rpx;
   right: 46rpx;
 }
 

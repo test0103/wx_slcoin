@@ -3,15 +3,15 @@
   <view class="start_container" wx:if="{{step === 1}}">
     <!-- 新手教程 -->
     <view class='new_person_container' wx:if="{{isWatchNew}}">
-      <view class='new_mask'></view>
+      <view class='new_mask' catchtap='toJumpTheNew'></view>
       <swiper class='new_person_swiper' current="{{currentSlide}}">
         <swiper-item>
           <text class='jump_new' bindtap='toJumpTheNew'>跳过 >></text>
-          <image class='slide_one' src='../../image/newperson/new_one.png'></image>
+          <image class='slide_one' bindtap='toNextNew' src='../../image/newperson/new_one.png'></image>
           <image class='new_narrow' bindtap='toNextNew' src='../../image/newperson/new_narrow.gif'></image>
         </swiper-item>
         <swiper-item>
-          <image class='slide_two' src='../../image/newperson/new_two.png'></image>
+          <image class='slide_two' bindtap='toJumpTheNew' src='../../image/newperson/new_two.png'></image>
           <text class='start_feel' bindtap='toJumpTheNew'>开始体验 >></text>
         </swiper-item>
       </swiper>
@@ -21,10 +21,7 @@
       <text bindtap='ViewToRegular' class='regular'>玩法介绍 >></text>
       <image class='narrow_img' src='../../image/waitgame/narrow.gif'></image>
       <image class="btn_img" src="../../image/waitgame/btn_start_game.png" />
-      <button wx:if="{{!isFormId}}" class="btn_game_bottom" open-type="getUserInfo" bindgetuserinfo='getUserInfo'></button>
-      <form bindsubmit="getUserFormId" report-submit='true'>
-        <button class="btn_game_bottom" wx:if="{{isFormId}}" form-type="submit" type="default"></button>
-      </form>
+      <button class="btn_game_bottom" open-type="getUserInfo" bindgetuserinfo='getUserInfo'></button>
     </view>
   </view>
 
@@ -36,7 +33,7 @@
         <image class='coin_img' src='../../image/waitgame/add_coin.png'></image>
         <view class='text_area'>
           <view>5人满，立即开赛</view>
-          <text>当前还差{{5 - unFullNum}}人</text>
+          <text>还差{{5 - unFullNum}}人</text>
         </view>
       </view>
       <!-- 人已满，开赛倒计时 -->
@@ -74,13 +71,21 @@
       </swiper>
     </view>
     <!--选择币种-->
-    <view class='picker_container'>
+    <view class='picker_container' wx:if="{{currentTab === 0 || currentTab === 2}}">
       <picker bindchange="bindPickerChange" value="{{coinIndex}}" range="{{coinArray}}">
         <view class='picker_coin'>
           {{coinType}}  <span></span>
         </view>
       </picker>
       <text class='picker_price'>价格：{{coinMoney}} /个</text>
+    </view>
+    <view class='picker_container' wx:if="{{currentTab === 1}}">
+      <picker bindchange="ownCoinPickerChange" value="{{ownCoinIndex}}" range="{{ownCoinArray}}">
+        <view class='picker_coin'>
+          {{ownCoinType}}  <span></span>
+        </view>
+      </picker>
+      <text class='picker_price'>价格：{{ownCoinMoney}} /个</text>
     </view>
     <!--交易部分-->
     <view class='tab_trade_container'>
@@ -101,7 +106,7 @@
         <Buy id="buy" coinItem="{{coinList[coinIndex]}}" AvailableMoney="{{our.assets}}" bind:BuySuccess = "ChangeMyAssets"/>
       </view>
       <view class='{{currentTab === 1 ? "content_two":""}}' wx:if='{{currentTab === 1}}'>
-        <Sale id="sale" coinItem="{{coinList[coinIndex]}}" AvailableMoney="{{our.possess}}" bind:SaleSuccess = "ChangeMyAssets"/>
+        <Sale id="sale" coinItem="{{ownCoinList[ownCoinIndex]}}" AvailableMoney="{{our.possess}}" bind:SaleSuccess = "ChangeMyAssets"/>
       </view>
       <view class='{{currentTab === 2 ? "content_three":""}}' wx:if='{{currentTab === 2}}'>
         <Record id="record" recordList="{{recordList}}"/>

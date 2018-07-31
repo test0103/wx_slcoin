@@ -20,6 +20,21 @@ Page({
   },
 
   onShow: function () {
+    wx.getStorage({
+      key: 'userInfo',
+      success: res => {
+        this.setData({
+          userLogo: res.data.avatarUrl
+        });
+      },
+    })
+    
+    this.getInvitedInfo();
+  },
+
+  // 获取邀请列表的信息
+  getInvitedInfo: function () {
+    console.log('获取邀请列表...');
     let temp = app.globalData.user_id;
     if (temp === '') {
       wx.getStorage({
@@ -32,11 +47,13 @@ Page({
     wx.request({
       url: app.globalData.ROOTURL + '/invitated',
       data: {
-        user_id: app.globalData.user_id,
+        user_id: temp,
         time: Utils.formatTime(new Date())
       },
       success: res => {
-        if(res.statusCode === 200) {
+        console.log(res)
+        if (res.statusCode === 200) {
+          console.log('获取邀请列表成功');
           if (res.data.data === '') {
             this.setData({
               isInvited: false
@@ -48,7 +65,7 @@ Page({
           }
         } else {
           wx.showToast({
-            title: '获取邀请列表失败', 
+            title: '获取邀请列表失败',
             icon: 'none'
           })
         }

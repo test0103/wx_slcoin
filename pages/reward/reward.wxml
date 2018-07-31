@@ -12,7 +12,7 @@
         <text style='flex: 0.8;font-size:36rpx;'>{{item.userRank}}</text>
         <text style='flex: 1;'>{{item.endTime}}</text> 
         <text style='flex: 2;'>{{item.earnMoney}} / {{item.earnRate}}</text>
-        <text style='flex: 1;' wx:if="{{item.userRank <= 1}}">{{item.award}}</text>
+        <text style='flex: 1;' wx:if="{{item.userRank <= 10}}">{{item.award}}</text>
         <text style='flex: 1;' wx:else>再接再厉</text> 
       </view>
     </block>

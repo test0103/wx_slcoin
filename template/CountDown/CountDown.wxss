@@ -1,7 +1,0 @@
-#count {
-  display: block;
-  text-align: center;
-  font-size: 16px;
-  color: #FFB10A;
-  float: right;
-}

@@ -42,6 +42,9 @@ Component({
   methods: {
     // 初始化组件数据
     init(){
+      if(this.data.coinItem === null) {
+        return;
+      }
       let coinNum = this.data.AvailableMoney[this.data.coinItem.coin_type];
       let amount = 0, money = 0;
       if(coinNum === undefined){ //  选择币种的时候，用户没有该币种

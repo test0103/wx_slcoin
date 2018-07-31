@@ -8,7 +8,7 @@
   <view class='enter_store'>
     <view wx:if="{{isEnough}}" class='can_use_money'>
       <view>当前可用：</view>
-      {{AvailableCoin}}
+      {{AvailableCoin}} 个
     </view>
     <view wx:else style='color:#ff6600;' class='can_use_money'>当前可用不足</view>
     <view class='label_store'>

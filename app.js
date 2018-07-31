@@ -68,6 +68,10 @@ App({
             data: false
           })
           wx.setStorage({
+            key: "isStartGame",  //  记录用户是否参加比赛或者比赛是否结束
+            data: false
+          })
+          wx.setStorage({
             key: "step",  // 记录当前的进行步骤
             data: 1
           })
@@ -91,6 +95,7 @@ App({
     user_id: '',  // 用户的唯一标识
     room_num: '',  // 用户参赛的房间号
     endTime: '', //用户当前比赛的结束时间
-    ROOTURL: "https://www.luoyunyu.com",  // 后台服务器的地址
+    // ROOTURL: "https://www.luoyunyu.com",  // 后台服务器的地址
+    ROOTURL: "http://172.20.120.190:8088",  // 后台服务器的地址
   }
 })

@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    currentRank: 4, //当前名次
+    currentRank: '', //当前名次
     userLogo: '../../image/logo.png',
     isEnterGame: false, //  是否参加比赛
     isStartGame: false  // 是否开赛
@@ -16,9 +16,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.showShareMenu({
-      withShareTicket: true
-    })
+   
   },
 
   onShow: function(){
@@ -44,9 +42,10 @@ Page({
       }
     })
   },
+
   // 获取排名信息
   getRankInfo: function() {
-    console.log('rank');
+    console.log('获取排名信息...');
     let temp_user = app.globalData.user_id;
     if (temp_user === '') {
       wx.getStorage({
@@ -72,23 +71,45 @@ Page({
         room_num: temp_room
       },
       success: res => {
+        console.log(res)
         if(res.statusCode === 200) {
+          console.log('获取排名信息成功')
           let len = res.data.length;
-          for(let i=0;i<len-1;i++){
+          let myRank = '';
+          for(let i=0;i<len;i++){
             if(typeof res.data[i] === 'object'){
               if(res.data[i].wei_pic) {
                 res.data[i].wei_pic = decodeURIComponent(res.data[i].wei_pic);
               } else {
                 res.data[i].wei_pic = '../../image/logo.png';
               }
+              if (res.data[i].user_id === Number(temp_user)){
+                myRank = res.data[i].userRank || res.data[i].rank;
+              }
+              if (res.data[i].nickname){
+                res.data[i].nickname = decodeURIComponent(res.data[i].nickname);
+              }
             }
           }
-          console.log(res.data);
-          this.setData({
-            HeadRank: res.data.slice(0, 3),
-            RankList: res.data.slice(3, len - 1),
-            currentRank: res.data[len - 1].split(":")[1]
-          })
+          if (len > 3) {
+            let _rank = [];
+            if(typeof res.data[len-1] === 'object'){
+              _rank = res.data.slice(3,len);
+            } else {
+              _rank = res.data.slice(3, len-1);
+            }
+            this.setData({
+              HeadRank: res.data.slice(0, 3),
+              RankList: _rank,
+              currentRank: myRank
+            })
+          } else {
+            this.setData({
+              HeadRank: res.data,
+              RankList: [],
+              currentRank: myRank
+            })
+          }
         } else {
           wx.showToast({
             title: '获取排名信息失败',
@@ -106,14 +127,28 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
-    } else if (res.from === 'menu') {
-      // 来自菜单的转发按钮
+    let temp_user = app.globalData.user_id;
+    let temp_room = app.globalData.room_num;
+    if (temp_room === '') {
+      wx.getStorage({
+        key: 'room_num',
+        success: res => {
+          temp_room = res.data;
+        },
+      })
     }
+    if (temp_user === '') {
+      wx.getStorage({
+        key: 'user_id',
+        success: res => {
+          temp_user = res.data;
+        },
+      })
+    }
+    
     return {
       title: '炒币大咖',
-      path: '/pages/rank/rank?room_num=' + app.globalData.room_num+'&user_id='+app.globalData.user_id,
+      path: '/pages/rank/rank?room_num=' + temp_user + '&user_id=' + temp_room
     }
   },
 

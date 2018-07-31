@@ -15,7 +15,6 @@ Page({
     room_num: '',
     currentSlide: 0, // 新手教程显示的当前页
     isWatchNew: false, //是否显示新手教程
-    isFormId: false, // 是否获取formId
     step: 1, // 表示进行的步骤：1-未参赛，2-邀请好友，3-开赛进行交易，4-比赛结束
     isEnterGame: false, // 是否参加比赛
     isStartGame: false, // 是否开赛
@@ -23,9 +22,19 @@ Page({
     countURL: '',  // 开赛前倒计时的数字图标 
     clockURL: '../../image/countdown/1.png', // 条形倒计时的图片
     clock: "00:00:00",  // 开赛后的倒计时
-    coinType: '', // 当前币种
-    coinMoney: '', // 当前币种的价格
-    coinIndex: 0,  // 当前选择的币种（数组中所在的序号）
+    coinList: [], // 当前所有币种信息数组
+
+    coinArray: [], // 当前所有币种名称集合的数组
+    coinType: '', // 买入时选择的币种
+    coinMoney: '', // 买入时选择币种的价格
+    coinIndex: 0,  // 买入时选择的币种（coinArray数组中所在的序号）
+
+    ownCoinList: [], // 自己所持币种的所有信息
+    ownCoinArray: [], // 卖出时自己所持有的所有币种
+    ownCoinType: '--', // 卖出时选择的币种
+    ownCoinMoney: '--', // 卖出时选择币种的价格
+    ownCoinIndex: 0,  // 卖出时选择的币种（ownCoinArray数组中所在的序号）
+
     AvailableMoney: '', // 当前可用余额
     currentTab: 0, // 当前所在的tab：0-买入，1-卖出，2-交易记录
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -33,7 +42,7 @@ Page({
     recordList:[],
     our: {
       assets: '20000',  // 目前的资产
-      possess: '', //目前持有的币种
+      possess: [], //目前持有的币种
       income: '',
       yield: ''
     },
@@ -98,8 +107,7 @@ Page({
    * 当页面隐藏的时候
    */
   onHide: function () {
-    clearInterval(coinTimer);
-    coinTimer = null;
+    clearTimeout(coinTimer);
   },
 
   // 关闭新手教程
@@ -128,7 +136,6 @@ Page({
       console.log('状态3')
       if(waitTime){
         clearTimeout(waitTime);
-        waitTime = null;
       }
       
       if (this.data.currentTab === 0) {
@@ -155,59 +162,14 @@ Page({
 
     if(step === 4) {
       console.log('状态4');
-      clearInterval(coinTimer);
-      coinTimer = null;
+      if(coinTimer) {
+        clearTimeout(coinTimer);
+      }
       this.getLastReward();
-      app.globalData.room_num = '';
     } 
   },
 
-  // 获取上次奖励的情况
-  getLastReward: function () {
-    let temp_user = app.globalData.user_id;
-    if (temp_user === '') {
-      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
-        temp_user = this.data.user_id;
-      } else {
-        wx.getStorage({
-          key: 'user_id',
-          success: res => {
-            temp_user = res.data;
-          },
-        })
-      }
-    }
-    wx.request({
-      url: app.globalData.ROOTURL + '/endInfo',
-      data: {
-        user_id: temp_user
-      },
-      success: res => {
-        if (res.statusCode === 200) {
-          this.setData({
-            myrank: res.data.userRank,
-            our: {
-              assets: res.data.asset,
-              income: res.data.earnMoney,
-              yield: res.data.earnRate
-            }
-          })
-        } else {
-          wx.showToast({
-            title: '获取奖励信息失败',
-            icon: 'none'
-          })
-        }
-      },
-      fail: err => {
-        console.error(err);
-      }
-    })
-  },
-
-  /**
-   * 点击立即参赛，获取用户信息权限
-   */
+  // 点击立即参赛，获取用户信息权限
   getUserInfo: function (e) {
     if (e.detail.userInfo) { // 用户点击了授权,并将用户的信息缓存
       wx.setStorage({
@@ -219,7 +181,7 @@ Page({
         data: e.detail.userInfo
       })
       wx.showToast({
-        title: '授权成功！',
+        title: '授权成功',
       });
     } else {  // 用户拒绝了授权
       wx.showModal({
@@ -229,7 +191,7 @@ Page({
       })
     }
     let userData = {
-      nickname: e.detail.userInfo.nickName || '',
+      nickname: encodeURIComponent(e.detail.userInfo.nickName || ''),
       wei_pic: encodeURIComponent(e.detail.userInfo.avatarUrl || '../../image/login.png'),
       time: Utils.formatTime(new Date())
     };
@@ -239,6 +201,9 @@ Page({
 
   // 用户登录，并获取user_id
   userLogin: function (userData) {
+    wx.showLoading({
+      title: '正在分配房间中...',
+    })
     wx.login({
       success: res => {
         if (res.code) {
@@ -255,15 +220,18 @@ Page({
             success: res => {
               console.log('获取user_id');
               if (res.statusCode === 200) {
+                app.globalData.user_id = res.data.user_id;
                 this.setData({
                   user_id: res.data.user_id
                 })
-                app.globalData.user_id = res.data.user_id;
-                console.log('缓存user_id！');
+                console.log('user_id:', res.data.user_id);
                 wx.setStorage({
                   key: 'user_id',
                   data: res.data.user_id
                 })
+                console.log('缓存user_id！');
+
+                this.joinGame(res.data.user_id);
               }
             },
             fail: err => {
@@ -273,7 +241,6 @@ Page({
               });
             }
           })
-
         } else {
           wx.showToast({
             title: '微信登录失败',
@@ -282,58 +249,34 @@ Page({
         }
       }
     })
-
-    // 切换点击按钮的属性，获取用户的formId，以便后续发模版消息
-    this.setData({
-      isFormId: true
-    })
   },
-
-  // 授权后获取用户的FormId，并参加比赛
-  getUserFormId: function (e) {
-    console.log('获取用户的formId')
-    this.setData({
-      formId: e.detail.formId
-    })
-    this.joinGame(e.detail.formId);
-  },
-
+  
   // 立即参赛
-  joinGame: function (formId) {
-    console.log('获取formId后，立即参赛')
-    let temp = app.globalData.user_id;
-
-    if(temp === ''){
-      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
-        temp = this.data.user_id;
-      } else {
-        wx.getStorage({
-          key: 'user_id',
-          success: res => {
-            temp = res.data;
-          }
-        });
-      }
-    }
+  joinGame: function (temp) {
+    console.log('立即参赛')
     let params = {
       user_id: temp,
-      formId: formId,
       time: Utils.formatTime(new Date())
     }
     if (this.data.query.from) {
       params.from = this.data.query.from;
       params.room_num = this.data.query.room_num;
     }
+    console.log('参赛传递的参数')
     console.log(params)
     wx.request({
       url: app.globalData.ROOTURL + '/game/join',
       data: params,
       success: res => {
+        console.log('参赛后返回的数据')
         console.log(res)
         if (res.statusCode === 200) {
+          wx.hideLoading(); //关闭分配房间的提示
+
           console.log('参赛成功获取房间号')
           let currenStep = 2;
-          app.globalData.room_num = res.data.roomNum;
+          app.globalData.room_num = res.data.roomNum || res.data.room_num;
+
           if (res.data.isStartGame && res.data.end_time) { //  异地登陆后，该用户以及参见过比赛，且该比赛尚未结束
             currenStep = 3;
             wx.setStorage({
@@ -347,7 +290,7 @@ Page({
           }
           this.setData({
             step: currenStep,
-            room_num: res.data.roomNum,
+            room_num: res.data.roomNum || res.data.room_num,
             isEnterGame: true,
             isStartGame: currenStep === 3,
             unFullNum: res.data.number
@@ -358,7 +301,7 @@ Page({
           })
           wx.setStorage({
             key: "room_num",
-            data: res.data.roomNum
+            data: res.data.roomNum || res.data.room_num
           })
           wx.setStorage({
             key: "isEnterGame",
@@ -384,7 +327,6 @@ Page({
     console.log('开始获取房间信息')
     let temp_user = app.globalData.user_id;
     let temp_room = app.globalData.room_num;
-
     if (temp_room === ''){
       if (this.data.room_num !== '' && this.data.room_num !== undefined){
         temp_room = this.data.room_num;
@@ -397,7 +339,6 @@ Page({
         })
       }
     }
-
     if (temp_user === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
         temp_user = this.data.user_id;
@@ -411,6 +352,8 @@ Page({
       }
     }
 
+    clearTimeout(waitTime);
+
     wx.request({
       url: app.globalData.ROOTURL + '/room_info',
       data: {
@@ -419,24 +362,28 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if (res.statusCode === 200) {
           console.log('成功更新房间信息')
-          console.log(res)
           this.setData({
             unFullNum: res.data.number
           })
-          if(res.data.number >= 5) {
-            console.log('获取比赛结束时间')
-            let temp_time = Utils.ToDate(res.data.endTime);
+
+          if(res.data.number >= 5 && res.data.endTime) {
+            console.log('获取比赛结束时间', res.data.endTime)
+            let temp_time;
+            if(res.data.endTime === null || res.data.endTime === '' || res.data.endTime === undefined){
+              temp_time = new Date(new Date().getTime() + 2 * 60 * 60 * 1000)
+            } else {
+              temp_time = Utils.ToDate(res.data.endTime);
+            }
+
             wx.setStorage({
               key: 'endTime',
               data: temp_time,
             })
             clearTimeout(waitTime);
-            waitTime = null;
-
             this.StartGame(temp_time);
-            return;
           }
         } else {
           wx.showToast({
@@ -447,7 +394,7 @@ Page({
         
         waitTime = setTimeout(() => {
           this.getRoomInfo();
-        }, 1 * 1000);
+        }, 1000);
       },
       fail: err => {
         console.error('获取房间信息失败！');
@@ -457,6 +404,7 @@ Page({
 
   // 请求虚拟货币的基本信息
   getCoinInfo: function() {
+    console.log('获取币种信息')
     let temp = app.globalData.user_id;
     if (temp === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
@@ -471,6 +419,8 @@ Page({
       }
     }
 
+    clearTimeout(coinTimer);
+
     wx.request({
       url: app.globalData.ROOTURL + '/coin_info',
       data: {
@@ -478,7 +428,9 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if (res.statusCode === 200) {
+          console.log('获取币种信息成功')
           let tempArr = [];
           for (let i = 0, len = res.data.length; i < len; i++) {
             tempArr.push(res.data[i].coin_type);
@@ -487,11 +439,15 @@ Page({
             coinList: res.data,
             coinArray: tempArr,
             coinType: tempArr[this.data.coinIndex],
-            coinMoney: res.data[this.data.coinIndex].coin_money
+            coinMoney: res.data[this.data.coinIndex].coin_money,
+            ownCoinType: this.data.ownCoinArray.length > 0 ? this.data.ownCoinArray[this.data.ownCoinIndex] : '--',
+            ownCoinMoney: this.data.ownCoinArray.length > 0 ? res.data[this.data.ownCoinIndex].coin_money : '--'
           })
+
           coinTimer = setTimeout(() => {
             this.getCoinInfo();
           }, 20 * 1000);
+
         } else {
           wx.showToast({
             title: '获取币种信息失败',
@@ -503,10 +459,12 @@ Page({
         console.error('获取币种信息失败！');
       }
     })
+
   },
 
   // 获取比赛时的用户交易信息
   getRollingInfor: function () {
+    console.log('获取比赛用户的交易信息')
     let temp = app.globalData.user_id;
     if (temp === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
@@ -528,7 +486,9 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if (res.statusCode === 200) {
+          console.log('获取交易信息成功')
           if(res.data.length > 0) {
             this.setData({
               msgList: res.data
@@ -549,6 +509,7 @@ Page({
 
   //请求当前用户的个人资产
   getMyAssets: function () {
+    console.log('获取当前用户的个人资产信息')
     let temp = app.globalData.user_id;
     if (temp === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
@@ -570,7 +531,9 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if (res.statusCode === 200) {
+          console.log('获取个人资产信息成功')
           this.setData({
             our: {
               assets: res.data.money,
@@ -590,9 +553,7 @@ Page({
     })
   },
 
-  /**
-   * 用户点击右上角分享
-   */
+  // 用户点击右上角分享
   onShareAppMessage: function (res) {
     let temp_user = app.globalData.user_id;
     let temp_room = app.globalData.room_num;
@@ -639,7 +600,7 @@ Page({
     count_down(this);
   },
 
-  // 选择币种事件 
+  // 买入时选择币种事件 
   bindPickerChange: function(e) {
     let item = this.data.coinList[e.detail.value];
     this.setData({
@@ -651,10 +612,48 @@ Page({
     if(this.data.currentTab === 0) {
       this.Buy = this.selectComponent('#buy');
       this.Buy.init();
-    } else if(this.data.currentTab === 1){
+    }
+  },
+
+  // 个人所持有币的下拉选择框
+  ownCoinPickerChange: function (e){
+    let item = this.data.ownCoinList[e.detail.value];
+    this.setData({
+      ownCoinIndex: Number(e.detail.value),
+      ownCoinType: item.coin_type,
+      ownCoinMoney: item.coin_money,
+    })
+
+    if (this.data.currentTab === 1) {
       this.Sale = this.selectComponent("#sale");
       this.Sale.init();
     }
+  },
+
+  // 初始化个人目前所持有的币
+  initOwnCoinList: function () {
+    let tempArr = [],tempList = [];
+    if (JSON.stringify(this.data.our.possess) !== "{}") {
+      for (let key in this.data.our.possess) {
+        tempArr.push(key);
+        console.log(this.data.our.possess)
+        for (let i = 0, len = this.data.coinList.length; i < len; i++) {
+          // console.log(111)
+          // console.log(this.data.coinList[i]);
+          // console.log(this.data.coinList[i].coin_type);
+          if (this.data.coinList[i].coin_type === key) {
+            tempList.push(this.data.coinList[i]);
+          }
+        }
+      }
+    }
+
+    this.setData({
+      ownCoinList: tempList,
+      ownCoinArray: tempArr,
+      ownCoinType: tempArr.length > 0 ? tempList[this.data.ownCoinIndex].coin_type : '--',
+      ownCoinMoney: tempArr.length > 0 ? tempList[this.data.ownCoinIndex].coin_money : '--'
+    });
   },
 
   // 选择买入/卖出/交易记录的Tab
@@ -668,6 +667,7 @@ Page({
         break;
       case 'tabsale':
         this.setData({ currentTab: 1 });
+        this.initOwnCoinList(); // 选择了卖出，初始化用户目前的持有币种
         this.Sale = this.selectComponent("#sale");
         this.Sale.init();
         break;
@@ -702,7 +702,9 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res);
         if (res.statusCode === 200) {
+          console.log('获取个人交易记录成功')
           this.setData({
             recordList: res.data
           })
@@ -723,11 +725,20 @@ Page({
   ChangeMyAssets: function(obj) {
     let refresh;
     if(obj.detail.type === 'buy'){
-      refresh = this.selectComponent("#buy").updateMoney(obj.detail.money);
+      refresh = () => {
+        this.selectComponent("#buy").updateMoney(obj.detail.money);
+        this.initOwnCoinList(); // 买入成功后，会更新个人的持有选择下拉框
+        this.getRollingInfor();
+        console.log('买入成功后，成功后刷新交易信息')
+      }
     } else {
-      refresh = this.selectComponent("#sale").updateMoney(Utils.DealMyOwn(obj.detail.possess));
+      refresh = () => {
+        this.selectComponent("#sale").updateMoney(Utils.DealMyOwn(obj.detail.possess));
+        this.initOwnCoinList(); // 买入成功后，会更新个人的持有选择下拉框
+        this.getRollingInfor();
+        console.log('卖出成功后，成功后刷新交易信息')
+      }
     }
-    
     this.setData({
       our: {
         assets: obj.detail.money,
@@ -739,6 +750,7 @@ Page({
   // 比赛结束
   GameOver: function(){
     let temp_room = app.globalData.room_num;
+    let temp_user = app.globalData.user_id;
     if (temp_room === '') {
       if (this.data.room_num !== '' && this.data.room_num !== undefined) {
         temp_room = this.data.room_num;
@@ -751,7 +763,6 @@ Page({
         })
       }
     }
-    let temp_user = app.globalData.user_id;
     if (temp_user === '') {
       if (this.data.user_id !== '' && this.data.user_id !== undefined) {
         temp_user = this.data.user_id;
@@ -764,7 +775,7 @@ Page({
         })
       }
     }
-    
+    console.log('比赛结束')
     wx.request({
       url: app.globalData.ROOTURL + '/game/room/end',
       data: {
@@ -773,13 +784,12 @@ Page({
         time: Utils.formatTime(new Date())
       },
       success: res => {
+        console.log(res)
         if(res.statusCode === 200) {
+          console.log('比赛结束成功，获取结算信息')
           clearTimeout(coinTimer);
-          coinTimer = null;
-
           this.setData({
             step: 4,
-            room_num: '',
             myrank: res.data.userRank,
             our:{
               assets: res.data.asset,
@@ -794,6 +804,53 @@ Page({
         } else {
           wx.showToast({
             title: '当场比赛结束失败',
+            icon: 'none'
+          })
+        }
+      },
+      fail: err => {
+        console.error(err);
+      }
+    })
+  },
+
+  // 获取上次奖励的情况
+  getLastReward: function () {
+    console.log('比赛已结束，获取比赛的结算')
+    let temp_user = app.globalData.user_id;
+    if (temp_user === '') {
+      if (this.data.user_id !== '' && this.data.user_id !== undefined) {
+        temp_user = this.data.user_id;
+      } else {
+        wx.getStorage({
+          key: 'user_id',
+          success: res => {
+            temp_user = res.data;
+          },
+        })
+      }
+    }
+    wx.request({
+      url: app.globalData.ROOTURL + '/endInfo',
+      data: {
+        user_id: temp_user
+      },
+      success: res => {
+        console.log(res)
+        if (res.statusCode === 200) {
+          console.log('获取比赛结束后的结算信息成功')
+          this.setData({
+            myrank: res.data.userRank,
+            our: {
+              assets: res.data.asset,
+              income: res.data.earnMoney,
+              yield: res.data.earnRate
+            }
+          })
+        } else {
+          wx.showToast({
+            title: '获取奖励信息失败',
+            icon: 'none'
           })
         }
       },
@@ -813,6 +870,18 @@ Page({
     wx.setStorage({
       key: "step",
       data: 1
+    })
+    wx.setStorage({
+      key: "isEnterGame",
+      data: false
+    })
+    wx.setStorage({
+      key: "isStartGame",
+      data: false
+    })
+    wx.setStorage({
+      key: "endTime",
+      data: ''
     })
   },
 
@@ -878,7 +947,7 @@ var countUrlList = [
 /*** 比赛结束的倒计时 ***/
 function CountOneDay(that) {
   clearTimeout(timer);
-  let countIndex = parseInt(total_second / 1200000);
+  let countIndex = parseInt(total_second / 100000);
   // 渲染倒计时时钟
   that.setData({
     clockURL: countUrlList[countIndex],
@@ -890,7 +959,6 @@ function CountOneDay(that) {
       clock: "00:00:00"
     });
     clearTimeout(timer);
-    timer = null;
     that.GameOver();
     return;
   }

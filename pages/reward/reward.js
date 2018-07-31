@@ -23,15 +23,18 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    console.log('查看奖励...')
     wx.request({
       url: app.globalData.ROOTURL + '/rewardInfo',
       data: {
         user_id: app.globalData.user_id
       },
       success: res => {
+        console.log(res)
         if(res.statusCode === 200){
+          console.log('获取奖励成功')
           for(let i=0,len=res.data.length;i<len;i++){
-            res.data[i].endTime = ChangeTheStyle(res.data[i].endTime);
+            res.data[i].endTime = ChangeTheStyle(res.data[i].roomNum);
           }
           this.setData({
             RewardList: res.data
@@ -51,5 +54,5 @@ Page({
 })
 function ChangeTheStyle(time) {
   let arr = time.split(" ");
-  return arr[2];
+  return arr[1];
 }

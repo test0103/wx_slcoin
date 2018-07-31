@@ -82,15 +82,34 @@ Page({
               }
             })
           } else {
-            this.setData({
-              myRank: res.data.userRank,
-              coinList: res.data.coins || [],
-              total: {
-                assets: res.data.asset,
-                profit: res.data.income,
-                yield: res.data.yield
+            let temp = []
+            if(res.data.coins) {
+              for(let i=0,len=res.data.coins.length;i<len;i++){
+                if(Number(res.data.coins[i].amount) > 0){
+                  temp.push(res.data.coins[i]);
+                }
               }
-            })
+              this.setData({
+                myRank: res.data.userRank,
+                coinList: temp,
+                total: {
+                  assets: res.data.asset,
+                  profit: res.data.income || res.data.earnMoney,
+                  yield: res.data.yield || res.data.earnRate
+                }
+              })
+            } else if(res.data[1]){
+              temp = DealMyPossess(res.data[1].possess);
+              this.setData({
+                myRank: res.data[0].userRank,
+                coinList: temp,
+                total: {
+                  assets: res.data[0].asset,
+                  profit: res.data[0].income || res.data[0].earnMoney,
+                  yield: res.data[0].yield || res.data[0].earnRate
+                }
+              })
+            }
           }
         } else {
           wx.showToast({
@@ -146,3 +165,24 @@ Page({
     })
   }
 })
+
+function DealMyPossess(str) {
+  if (str === '') {
+    return [];
+  }
+
+  let temp = str.split(",");
+  let result = [];
+  for (let i = 0, len = temp.length; i < len-1; i++) {
+    let item = {};
+    if (temp[i] !== "") {
+      let key = temp[i].split(" ");
+      if (Number(key[1]) !== 0) {
+        item.coin_type = key[0];
+        item.amount = key[1];
+      }
+    }
+    result.push(item);
+  }
+  return result;
+}

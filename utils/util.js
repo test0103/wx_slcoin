@@ -80,7 +80,9 @@ function DealMyOwn(str) {
   for (let i = 0, len = temp.length; i < len; i++) {
     if (temp[i] !== "") {
       let key = temp[i].split(" ");
-      item[key[0]] = key[1];
+      if(Number(key[1]) !== 0){
+        item[key[0]] = key[1];
+      }
     }
   }
   return item;
