@@ -8,6 +8,7 @@ Page({
    */
   data: {
     userLogo: '../../image/logo.png',
+    Logo: '../../image/logo.png',
     isInvited: true,
     inviteList:[],  // 已邀请好友列表
   },
@@ -59,6 +60,16 @@ Page({
               isInvited: false
             })
           } else {
+            for(let i=0,len=res.data.length;i<len;i++){
+              if (res.data[i].wei_pic || res.data[i].weiPic) {
+                res.data[i].wei_pic = decodeURIComponent(res.data[i].wei_pic || res.data[i].weiPic);
+              } else {
+                res.data[i].wei_pic = '../../image/logo.png';
+              }
+              if (res.data[i].nickname) {
+                res.data[i].nickname = decodeURIComponent(res.data[i].nickname);
+              }
+            }
             this.setData({
               inviteList: res.data
             })

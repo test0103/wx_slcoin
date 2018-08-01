@@ -1,8 +1,12 @@
+page {
+  height: 100%;
+  width: 100%;
+  background-color: #0A0F2C;
+}
 .share_container {
   height: 100%;
   width: 100%;
   background-color: #0A0F2C;
-  padding-bottom: 80rpx;
 }
 
 /** 邀请LOGO的样式 **/
@@ -26,7 +30,7 @@
   margin: 0 auto;
 }
 .share_title .share_btn {
-  width: 312rpx;
+  width: 320rpx;
   height: 80rpx;
   background-size: cover;
   background-image: url('http://pcb8f4day.bkt.clouddn.com/new_btn_share.png');

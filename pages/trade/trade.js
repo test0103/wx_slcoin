@@ -22,8 +22,8 @@ Page({
     countURL: '',  // 开赛前倒计时的数字图标 
     clockURL: '../../image/countdown/1.png', // 条形倒计时的图片
     clock: "00:00:00",  // 开赛后的倒计时
-    coinList: [], // 当前所有币种信息数组
 
+    coinList: [], // 当前所有币种信息数组
     coinArray: [], // 当前所有币种名称集合的数组
     coinType: '', // 买入时选择的币种
     coinMoney: '', // 买入时选择币种的价格
@@ -441,7 +441,7 @@ Page({
             coinType: tempArr[this.data.coinIndex],
             coinMoney: res.data[this.data.coinIndex].coin_money,
             ownCoinType: this.data.ownCoinArray.length > 0 ? this.data.ownCoinArray[this.data.ownCoinIndex] : '--',
-            ownCoinMoney: this.data.ownCoinArray.length > 0 ? res.data[this.data.ownCoinIndex].coin_money : '--'
+            ownCoinMoney: this.data.ownCoinArray.length > 0 ? this.data.ownCoinList[this.data.ownCoinIndex].coin_money : '--'
           })
 
           coinTimer = setTimeout(() => {
@@ -636,23 +636,20 @@ Page({
     if (JSON.stringify(this.data.our.possess) !== "{}") {
       for (let key in this.data.our.possess) {
         tempArr.push(key);
-        console.log(this.data.our.possess)
         for (let i = 0, len = this.data.coinList.length; i < len; i++) {
-          // console.log(111)
-          // console.log(this.data.coinList[i]);
-          // console.log(this.data.coinList[i].coin_type);
           if (this.data.coinList[i].coin_type === key) {
             tempList.push(this.data.coinList[i]);
           }
         }
       }
     }
-
+    
     this.setData({
+      ownCoinIndex: 0,
       ownCoinList: tempList,
       ownCoinArray: tempArr,
-      ownCoinType: tempArr.length > 0 ? tempList[this.data.ownCoinIndex].coin_type : '--',
-      ownCoinMoney: tempArr.length > 0 ? tempList[this.data.ownCoinIndex].coin_money : '--'
+      ownCoinType: tempArr.length > 0 ? tempList[0].coin_type : '--',
+      ownCoinMoney: tempArr.length > 0 ? tempList[0].coin_money : '--'
     });
   },
 
@@ -726,15 +723,15 @@ Page({
     let refresh;
     if(obj.detail.type === 'buy'){
       refresh = () => {
-        this.selectComponent("#buy").updateMoney(obj.detail.money);
         this.initOwnCoinList(); // 买入成功后，会更新个人的持有选择下拉框
+        this.selectComponent("#buy").updateMoney(obj.detail.money);
         this.getRollingInfor();
         console.log('买入成功后，成功后刷新交易信息')
       }
     } else {
       refresh = () => {
+        this.initOwnCoinList(); // 卖出成功后，会更新个人的持有选择下拉框
         this.selectComponent("#sale").updateMoney(Utils.DealMyOwn(obj.detail.possess));
-        this.initOwnCoinList(); // 买入成功后，会更新个人的持有选择下拉框
         this.getRollingInfor();
         console.log('卖出成功后，成功后刷新交易信息')
       }
@@ -744,7 +741,7 @@ Page({
         assets: obj.detail.money,
         possess: Utils.DealMyOwn(obj.detail.possess)
       }
-    }, refresh)
+    }, refresh);
   },
 
   // 比赛结束

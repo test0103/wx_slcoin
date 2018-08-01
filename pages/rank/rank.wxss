@@ -100,11 +100,11 @@ page{
 .rank_list {
   position: relative;
   margin: 0 auto;
-  min-height: 580rpx;
+  height: 540rpx;
 }
 .rank_item {
   width: 644rpx;
-  height: 100rpx;
+  height: 90rpx;
   color: #fff;
   font-size: 24rpx;
   margin: 18rpx auto 0;
@@ -148,7 +148,7 @@ page{
 
 /** 未参赛的排名样式 **/
 .none_container{
-  min-height: 1110rpx;
+  height: 1000rpx;
   width: 100%;
   background-color: #0A0F2C;
 }
@@ -160,7 +160,7 @@ page{
   height: 500rpx;
   position: absolute;
   top: 166rpx;
-  left: 210rpx;
+  left: 180rpx;
 }
 .no_rank image{
   width: 380rpx;
@@ -169,8 +169,8 @@ page{
   top: 0rpx;
 }
 .to_Join {
-  width: 374rpx;
-  height: 110rpx;
+  width: 390rpx;
+  height: 100rpx;
   position: absolute;
   bottom: 238rpx;
   left: 0;

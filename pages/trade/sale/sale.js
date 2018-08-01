@@ -149,7 +149,6 @@ Component({
         amount: this.data.sale_coin_amount,
         time: Utils.formatTime(new Date())
       }
-      console.log(params)
       wx.request({
         url: getApp().globalData.ROOTURL + '/transaction',
         data: params,
@@ -172,7 +171,7 @@ Component({
                 allStore: 1,
                 halfStore: 3,
                 TradeMoney: 0,
-                sale_coin_amount: 0
+                sale_coin_amount: ''
               })
             }, 1000)
           } else {

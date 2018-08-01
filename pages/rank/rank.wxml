@@ -28,7 +28,7 @@
       <text>收益率</text>
       <text>持仓盈亏</text>
     </view>
-    <view class='rank_list'>
+    <scroll-view scroll-y class='rank_list'>
       <block wx:for="{{RankList}}" wx:for-item="item" wx:key="indexr">
         <view class="rank_item {{item.rank == currentRank?'It_My':''}}">
           <text class="rank_index">{{item.rank || item.userRank}}</text>
@@ -38,11 +38,11 @@
           <text class='rank_yield'>{{item.yield || item.earnRate}}</text> 
         </view>
       </block>
-    </view>
+    </scroll-view>
   </view>
   
   <!-- 未参加比赛 -->
-  <view wx:else class='none_container'>
+  <view wx:if="{{!isStartGame}}" class='none_container'>
     <view class='no_rank'>
       <image src='../../image/share/no_friend.png'></image>
       <text wx:if="{{!isEnterGame}}">您还未参加比赛</text>

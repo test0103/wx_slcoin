@@ -70,7 +70,7 @@ page{
 .listen_area{
   width: 700rpx;
   position: fixed;
-  bottom: 200rpx;
+  bottom: 190rpx;
   left: 0;
   right: 0;
   z-index: 2;

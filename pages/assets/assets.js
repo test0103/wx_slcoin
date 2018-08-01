@@ -15,6 +15,7 @@ Page({
     },
     coinList: [],
     isEnterGame: false,
+    isStartGame: false
   },
 
   /**
@@ -30,7 +31,6 @@ Page({
     wx.getStorage({
       key: 'isEnterGame',
       success: (res) => {
-        console.log(res)
         if (res.data) {
           let userData = wx.getStorageSync('userInfo');
           this.setData({
@@ -46,6 +46,7 @@ Page({
 
   // 获取个人资产信息
   getUserAsset: function (){
+    console.log('获取个人资产信息')
     let temp_user = app.globalData.user_id;
     if (temp_user === '') {
       wx.getStorage({
@@ -71,10 +72,12 @@ Page({
         room_num: temp_room
       },
       success: res => {
+        console.log(res)
         if(res.statusCode === 200) {
-          console.log(res)
           if(res.data.msg === "比赛尚未开始") {
             this.setData({
+              myRank: '',
+              coinList:[],
               total: {
                 assets: res.data.asset,
                 profit: '0.00',
@@ -89,27 +92,16 @@ Page({
                   temp.push(res.data.coins[i]);
                 }
               }
-              this.setData({
-                myRank: res.data.userRank,
-                coinList: temp,
-                total: {
-                  assets: res.data.asset,
-                  profit: res.data.income || res.data.earnMoney,
-                  yield: res.data.yield || res.data.earnRate
-                }
-              })
-            } else if(res.data[1]){
-              temp = DealMyPossess(res.data[1].possess);
-              this.setData({
-                myRank: res.data[0].userRank,
-                coinList: temp,
-                total: {
-                  assets: res.data[0].asset,
-                  profit: res.data[0].income || res.data[0].earnMoney,
-                  yield: res.data[0].yield || res.data[0].earnRate
-                }
-              })
             }
+            this.setData({
+              myRank: res.data.userRank,
+              coinList: temp,
+              total: {
+                assets: res.data.asset,
+                profit: res.data.income || res.data.earnMoney,
+                yield: res.data.yield || res.data.earnRate
+              }
+            })
           }
         } else {
           wx.showToast({
@@ -174,15 +166,15 @@ function DealMyPossess(str) {
   let temp = str.split(",");
   let result = [];
   for (let i = 0, len = temp.length; i < len-1; i++) {
-    let item = {};
     if (temp[i] !== "") {
       let key = temp[i].split(" ");
       if (Number(key[1]) !== 0) {
+        let item = {};
         item.coin_type = key[0];
         item.amount = key[1];
+        result.push(item);
       }
     }
-    result.push(item);
   }
   return result;
 }

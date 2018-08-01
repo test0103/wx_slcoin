@@ -8,6 +8,7 @@ Page({
   data: {
     currentRank: '', //当前名次
     userLogo: '../../image/logo.png',
+
     isEnterGame: false, //  是否参加比赛
     isStartGame: false  // 是否开赛
   },
@@ -35,6 +36,13 @@ Page({
                   isStartGame: true,
                 });
                 this.getRankInfo();
+              } else {
+                this.setData({
+                  isStartGame: false,
+                  HeadRank: [],
+                  RankList: [],
+                  currentRank: ''
+                });
               }
             }
           })
