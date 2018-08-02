@@ -74,9 +74,16 @@ Component({
     },
 
     updateMoney: function (data) {
-      this.setData({
-        AvailableCoin: data[this.data.coinItem.coin_type]
-      })
+      if(this.data.coinItem) {
+        this.setData({
+          AvailableCoin: data[this.data.coinItem.coin_type]
+        })
+      } else {
+        this.setData({
+          isEnough: false,
+          AvailableCoin: ''
+        })
+      }
     },
 
     // 选择全仓或者半仓

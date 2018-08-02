@@ -3,7 +3,7 @@ const app = getApp();
 var coinTimer;  //获取币种信息的定时器
 var waitTime; // 等待比赛开始的定时器
 var timer;  //比赛倒计时的定时器
-var total_second = 5 * 60 * 1000; // 2h的倒计时
+var total_second = 8 * 60 * 60 * 1000; // 2h的倒计时
 var test = '333333'
 
 Page({
@@ -24,19 +24,17 @@ Page({
     clock: "00:00:00",  // 开赛后的倒计时
 
     coinList: [], // 当前所有币种信息数组
-    coinArray: [], // 当前所有币种名称集合的数组
     coinType: '', // 买入时选择的币种
     coinMoney: '', // 买入时选择币种的价格
-    coinIndex: 0,  // 买入时选择的币种（coinArray数组中所在的序号）
+    coinIndex: 0,  // 买入时选择的币种（coinList数组中所在的序号）
 
     ownCoinList: [], // 自己所持币种的所有信息
-    ownCoinArray: [], // 卖出时自己所持有的所有币种
     ownCoinType: '--', // 卖出时选择的币种
     ownCoinMoney: '--', // 卖出时选择币种的价格
-    ownCoinIndex: 0,  // 卖出时选择的币种（ownCoinArray数组中所在的序号）
+    ownCoinIndex: 0,  // 卖出时选择的币种（ownCoinList数组中所在的序号）
 
     AvailableMoney: '', // 当前可用余额
-    currentTab: 0, // 当前所在的tab：0-买入，1-卖出，2-交易记录
+    currentTab: 0, // 当前所在的tab：0-买入，1-卖出，2-交易记录 
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     msgList:['目前暂无交易记录'],
     recordList:[],
@@ -369,7 +367,7 @@ Page({
             unFullNum: res.data.number
           })
 
-          if(res.data.number >= 5 && res.data.endTime) {
+          if(res.data.number >= 30 && res.data.endTime) {
             console.log('获取比赛结束时间', res.data.endTime)
             let temp_time;
             if(res.data.endTime === null || res.data.endTime === '' || res.data.endTime === undefined){
@@ -431,17 +429,12 @@ Page({
         console.log(res)
         if (res.statusCode === 200) {
           console.log('获取币种信息成功')
-          let tempArr = [];
-          for (let i = 0, len = res.data.length; i < len; i++) {
-            tempArr.push(res.data[i].coin_type);
-          }
           this.setData({
             coinList: res.data,
-            coinArray: tempArr,
-            coinType: tempArr[this.data.coinIndex],
+            coinType: res.data[this.data.coinIndex].coin_type,
             coinMoney: res.data[this.data.coinIndex].coin_money,
-            ownCoinType: this.data.ownCoinArray.length > 0 ? this.data.ownCoinArray[this.data.ownCoinIndex] : '--',
-            ownCoinMoney: this.data.ownCoinArray.length > 0 ? this.data.ownCoinList[this.data.ownCoinIndex].coin_money : '--'
+            ownCoinType: this.data.ownCoinList.length > 0 ? this.data.ownCoinList[this.data.ownCoinIndex].coin_type : '--',
+            ownCoinMoney: this.data.ownCoinList.length > 0 ? this.data.ownCoinList[this.data.ownCoinIndex].coin_money : '--'
           })
 
           coinTimer = setTimeout(() => {
@@ -632,10 +625,9 @@ Page({
 
   // 初始化个人目前所持有的币
   initOwnCoinList: function () {
-    let tempArr = [],tempList = [];
+    let tempList = [];
     if (JSON.stringify(this.data.our.possess) !== "{}") {
       for (let key in this.data.our.possess) {
-        tempArr.push(key);
         for (let i = 0, len = this.data.coinList.length; i < len; i++) {
           if (this.data.coinList[i].coin_type === key) {
             tempList.push(this.data.coinList[i]);
@@ -647,9 +639,8 @@ Page({
     this.setData({
       ownCoinIndex: 0,
       ownCoinList: tempList,
-      ownCoinArray: tempArr,
-      ownCoinType: tempArr.length > 0 ? tempList[0].coin_type : '--',
-      ownCoinMoney: tempArr.length > 0 ? tempList[0].coin_money : '--'
+      ownCoinType: tempList.length > 0 ? tempList[0].coin_type : '--',
+      ownCoinMoney: tempList.length > 0 ? tempList[0].coin_money : '--'
     });
   },
 
@@ -944,7 +935,7 @@ var countUrlList = [
 /*** 比赛结束的倒计时 ***/
 function CountOneDay(that) {
   clearTimeout(timer);
-  let countIndex = parseInt(total_second / 100000);
+  let countIndex = parseInt(total_second / 4800000);
   // 渲染倒计时时钟
   that.setData({
     clockURL: countUrlList[countIndex],

@@ -32,8 +32,8 @@
       <view style='width:100%;height:100%;' wx:if="{{!isStartGame}}">
         <image class='coin_img' src='../../image/waitgame/add_coin.png'></image>
         <view class='text_area'>
-          <view>5人满，立即开赛</view>
-          <text>还差{{5 - unFullNum}}人</text>
+          <view>30人满，立即开赛</view>
+          <text>还差{{30 - unFullNum}}人</text>
         </view>
       </view>
       <!-- 人已满，开赛倒计时 -->
@@ -72,7 +72,7 @@
     </view>
     <!--选择币种-->
     <view class='picker_container' wx:if="{{currentTab === 0 || currentTab === 2}}">
-      <picker bindchange="bindPickerChange" value="{{coinIndex}}" range="{{coinArray}}">
+      <picker bindchange="bindPickerChange" value="{{coinIndex}}" range="{{coinList}}" range-key="one_coin">
         <view class='picker_coin'>
           {{coinType}}  <span></span>
         </view>
@@ -80,7 +80,7 @@
       <text class='picker_price'>价格：{{coinMoney}} /个</text>
     </view>
     <view class='picker_container' wx:if="{{currentTab === 1}}">
-      <picker bindchange="ownCoinPickerChange" value="{{ownCoinIndex}}" range="{{ownCoinArray}}">
+      <picker bindchange="ownCoinPickerChange" value="{{ownCoinIndex}}" range="{{ownCoinList}}" range-key='one_coin'>
         <view class='picker_coin'>
           {{ownCoinType}}  <span></span>
         </view>

@@ -49,10 +49,13 @@ page{
   left: 234rpx;
 }
 .myRank {
+  display: block;
+  width: 80rpx;
+  text-align: center;
   font-size: 50rpx;
   position: absolute;
   top: 70rpx;
-  right: 80rpx;
+  right: 52rpx;
 }
 /**奖励和规则按钮样式**/
 .myReward {

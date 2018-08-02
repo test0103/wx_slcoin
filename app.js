@@ -96,6 +96,6 @@ App({
     room_num: '',  // 用户参赛的房间号
     endTime: '', //用户当前比赛的结束时间
     // ROOTURL: "https://www.luoyunyu.com",  // 后台服务器的地址
-    ROOTURL: "http://172.20.130.50:8088",  // 后台服务器的地址
+    ROOTURL: "http://172.20.120.190:8088",  // 后台服务器的地址
   }
 })
